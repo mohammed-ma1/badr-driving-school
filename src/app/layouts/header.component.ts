@@ -43,16 +43,18 @@ interface NavItem {
           @for (item of nav; track item.path) {
             <a
               [routerLink]="item.path"
-              routerLinkActive="text-brand-300"
+              routerLinkActive="!text-brand-300 after:scale-x-100"
               [routerLinkActiveOptions]="{ exact: item.path === '/' }"
-              class="text-sm font-semibold text-white/85 transition-colors hover:text-brand-300">
+              ariaCurrentWhenActive="page"
+              class="relative py-3 text-sm font-semibold text-white/85 transition-colors after:absolute after:inset-x-0 after:bottom-1 after:h-0.5 after:origin-center after:scale-x-0 after:rounded-full after:bg-brand-400 after:transition-transform hover:text-brand-300">
               {{ item.label }}
             </a>
           }
         </nav>
 
-        <a routerLink="/theory" class="hidden rounded bg-brand-500 px-6 py-3 text-sm font-bold text-white transition-colors hover:bg-brand-600 lg:inline-flex">
-          تدرب الآن
+        <a routerLink="/booking" class="hidden items-center gap-2 rounded-xl bg-brand-500 px-6 py-3 text-sm font-bold text-white shadow-soft transition-all hover:-translate-y-0.5 hover:bg-brand-600 lg:inline-flex">
+          <app-icon name="calendar" [size]="17" />
+          احجز موعداً
         </a>
 
         <button
@@ -85,6 +87,7 @@ interface NavItem {
             [routerLink]="item.path"
             routerLinkActive="bg-brand-50 text-brand-700"
             [routerLinkActiveOptions]="{ exact: item.path === '/' }"
+            ariaCurrentWhenActive="page"
             (click)="drawer.set(false)"
             class="mobile-nav-link">
             <app-icon [name]="item.icon" [size]="20" class="text-brand-500" />
@@ -93,8 +96,8 @@ interface NavItem {
         }
 
         <div class="mt-5 space-y-2.5 border-t border-brand-100 pt-5">
-          <a routerLink="/theory" (click)="drawer.set(false)" class="btn-primary w-full">
-            <app-icon name="clipboard" [size]="18" />تدرب الآن
+          <a routerLink="/booking" (click)="drawer.set(false)" class="btn-primary w-full">
+            <app-icon name="calendar" [size]="18" />احجز موعداً
           </a>
         </div>
 

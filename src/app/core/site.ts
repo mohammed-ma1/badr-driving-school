@@ -7,6 +7,7 @@ export const SITE = {
   name: 'مركز بدر سامي الجبور',
   nameFull: 'مركز بدر سامي الجبور لتعليم قيادة السيارات',
   tagline: 'تعليم قيادة السيارات لجميع الفئات في المملكة الأردنية الهاشمية',
+  url: 'https://mohammed-ma1.github.io/badr-driving-school/',
   year: 2026,
 
   /** Dialable form (what `tel:` uses) and the grouped form shown on screen. */

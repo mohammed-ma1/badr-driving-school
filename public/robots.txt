@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://mohammed-ma1.github.io/badr-driving-school/sitemap.xml
