@@ -1,0 +1,694 @@
+@if (stage() !== 'running') {
+  <app-page-hero
+    eyebrow="محاكاة حقيقية لفحص الترخيص الأردني"
+    title="تدرّب. اختبر. انجح."
+    subtitle="جميع الأسئلة المتوقعة للاختبار النظري لقيادة السيارات في دائرة ترخيص المركبات الأردنية.">
+    <div class="mt-9 grid max-w-xl grid-cols-3 gap-px overflow-hidden rounded-2xl border border-white/10 bg-white/10 backdrop-blur-md">
+      <div class="bg-asphalt-900/60 px-4 py-4 text-center">
+        <strong class="num block text-2xl font-black text-brand-400">{{ bank.length }}</strong>
+        <span class="text-[11px] font-bold text-white/55">سؤال تدريبي</span>
+      </div>
+      <div class="bg-asphalt-900/60 px-4 py-4 text-center">
+        <strong class="num block text-2xl font-black text-brand-400">{{ modelCount }}</strong>
+        <span class="text-[11px] font-bold text-white/55">نموذج حقيقي</span>
+      </div>
+      <div class="bg-asphalt-900/60 px-4 py-4 text-center">
+        <strong class="num block text-2xl font-black text-brand-400">51/60</strong>
+        <span class="text-[11px] font-bold text-white/55">علامة النجاح</span>
+      </div>
+    </div>
+  </app-page-hero>
+}
+
+<div class="sticky top-16 z-30 border-b border-stone-200/80 bg-white/90 shadow-sm backdrop-blur-xl lg:top-[112px]">
+  <div class="container-page flex items-center justify-between gap-4 py-4">
+    <div class="inline-flex rounded-2xl border border-stone-200 bg-stone-50 p-1">
+      <button
+        type="button"
+        (click)="mode.set('exam')"
+        [attr.aria-pressed]="mode() === 'exam'"
+        class="flex items-center gap-2 rounded-xl px-5 py-2.5 text-sm font-bold transition-all"
+        [class]="mode() === 'exam' ? 'bg-asphalt-900 text-white shadow-md' : 'text-stone-500 hover:text-brand-600'">
+        <app-icon name="clipboard" [size]="17" />
+        الاختبار
+      </button>
+      <button
+        type="button"
+        (click)="mode.set('signs')"
+        [attr.aria-pressed]="mode() === 'signs'"
+        class="flex items-center gap-2 rounded-xl px-5 py-2.5 text-sm font-bold transition-all"
+        [class]="mode() === 'signs' ? 'bg-asphalt-900 text-white shadow-md' : 'text-stone-500 hover:text-brand-600'">
+        <app-icon name="sign" [size]="17" />
+        بطاقات الإشارات
+      </button>
+    </div>
+    @if (best() !== null) {
+      <p class="hidden text-sm font-bold text-stone-500 sm:block">
+        أفضل نتيجة: <span class="num text-brand-600">{{ best() }}%</span>
+      </p>
+    }
+  </div>
+</div>
+
+@if (mode() === 'exam') {
+  <!-- ============================ Exam: setup ============================ -->
+  @if (stage() === 'setup') {
+    <section class="road-bg py-14 md:py-20">
+      <div class="container-page max-w-5xl">
+        <div class="mb-12 text-center">
+          <span class="eyebrow">الفحص</span>
+          <h2 class="h-section mt-5">اختر فئة الاختبار</h2>
+          <p class="p-section">
+            نماذج تدريبية أصلية تغطي موضوعات الاختبار النظري لقيادة السيارات في دائرة ترخيص
+            السواقين والمركبات الأردنية. ابدأ بالأجزاء، ثم انتقل إلى الاختبار الشامل.
+          </p>
+        </div>
+
+        <div class="space-y-10">
+          @for (group of examGroups; track group.id; let groupIndex = $index) {
+            <article class="exam-group overflow-hidden rounded-[2rem] border border-brand-100 bg-white shadow-card" [style.--group-index]="groupIndex">
+              <div class="relative grid items-center gap-5 overflow-hidden bg-gradient-to-l from-brand-50 to-white p-6 md:grid-cols-[auto_1fr] md:p-8">
+                <span class="group-orbit grid h-16 w-16 place-items-center rounded-2xl bg-asphalt-900 text-brand-400 shadow-lg">
+                  <app-icon [name]="group.icon" [size]="31" />
+                </span>
+                <div>
+                  <p class="text-xs font-bold text-brand-600">الفحص النظري</p>
+                  <h3 class="mt-1 text-2xl font-black text-ink">{{ group.title }}</h3>
+                  <p class="mt-3 max-w-3xl text-[15px] leading-relaxed text-stone-600">{{ group.description }}</p>
+                </div>
+              </div>
+
+              <div class="p-6 md:p-8">
+                <h4 class="mb-4 text-sm font-black text-ink">نماذج الفحص</h4>
+                <div class="grid gap-3 sm:grid-cols-2" [class.lg:grid-cols-4]="group.parts.length > 3" [class.lg:grid-cols-3]="group.parts.length <= 3">
+                  @for (part of group.parts; track part.label) {
+                    <button
+                      type="button"
+                      (click)="startPreset(part)"
+                      class="model-card group flex items-center justify-between gap-3 rounded-2xl border border-brand-200 bg-white p-4 text-start transition-all hover:-translate-y-1 hover:border-brand-500 hover:bg-brand-50 hover:shadow-soft">
+                      <span>
+                        <span class="block text-sm font-black text-ink">{{ part.label }}</span>
+                        <span class="num mt-1 block text-[11px] font-bold text-stone-400">
+                          {{ part.count }} أسئلة · {{ part.count }} دقائق
+                        </span>
+                      </span>
+                      <span class="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-brand-50 text-brand-600 transition-colors group-hover:bg-brand-500 group-hover:text-on-brand">
+                        <app-icon name="play" [size]="17" />
+                      </span>
+                    </button>
+                  }
+                </div>
+
+                <div class="comprehensive-card relative mt-7 overflow-hidden rounded-3xl bg-asphalt-900 p-6 text-white md:flex md:items-center md:justify-between md:gap-8 md:p-8">
+                  <div>
+                    <span class="chip bg-brand-500/15 text-brand-400">الاختبار الشامل</span>
+                    <h4 class="mt-3 text-xl font-black">{{ group.comprehensive.label }}</h4>
+                    <p class="mt-2 max-w-2xl text-sm leading-relaxed text-white/60">
+                      اختبار مشابه لامتحان دائرة الترخيص، يحتوي على
+                      <span class="num font-black text-white">60</span> سؤالاً يجب إكمالها خلال
+                      <span class="num font-black text-white">60</span> دقيقة. للنجاح يجب الإجابة على
+                      <span class="num font-black text-brand-400">51</span> سؤالاً بشكل صحيح.
+                    </p>
+                  </div>
+                  <button
+                    type="button"
+                    (click)="startPreset(group.comprehensive)"
+                    class="btn-primary mt-6 h-14 w-full shrink-0 px-7 text-base md:mt-0 md:w-auto">
+                    <app-icon name="play" [size]="19" />
+                    ابدأ الاختبار الشامل
+                  </button>
+                </div>
+              </div>
+            </article>
+          }
+        </div>
+
+        <!-- Quick practice lab: preserves topic-based study alongside the real models. -->
+        <section class="practice-lab mt-12 overflow-hidden rounded-[2rem] border border-brand-200 bg-white shadow-lifted">
+          <div class="grid gap-8 p-6 md:grid-cols-[1fr_auto] md:items-end md:p-9">
+            <div>
+              <span class="eyebrow"><app-icon name="bolt" [size]="14" /> تدريب ذكي</span>
+              <h3 class="mt-4 text-2xl font-black text-ink">أنشئ اختبارك السريع</h3>
+              <p class="mt-2 max-w-2xl text-sm leading-7 text-stone-500">
+                ركّز على نقطة ضعف محددة أو امزج كل المواضيع. سنختار لك أسئلة مختلفة في كل محاولة.
+              </p>
+
+              <div class="mt-6">
+                <p class="mb-3 text-xs font-black text-stone-500">اختر الموضوع</p>
+                <div class="flex flex-wrap gap-2">
+                  @for (item of topics; track item.id) {
+                    <button
+                      type="button"
+                      (click)="topic.set(item.id)"
+                      [attr.aria-pressed]="topic() === item.id"
+                      class="rounded-xl border px-4 py-2.5 text-sm font-bold transition-all"
+                      [class]="topic() === item.id ? 'border-asphalt-900 bg-asphalt-900 text-white shadow-md' : 'border-stone-200 bg-white text-stone-600 hover:border-brand-300 hover:text-brand-700'">
+                      {{ item.label }}
+                    </button>
+                  }
+                </div>
+              </div>
+
+              <div class="mt-5">
+                <p class="mb-3 text-xs font-black text-stone-500">عدد الأسئلة</p>
+                <div class="flex gap-2">
+                  @for (amount of countOptions; track amount) {
+                    <button
+                      type="button"
+                      (click)="setCount(amount)"
+                      [attr.aria-pressed]="count() === amount"
+                      class="num grid h-11 min-w-14 place-items-center rounded-xl border text-sm font-black transition-all"
+                      [class]="count() === amount ? 'border-brand-500 bg-brand-500 text-on-brand shadow-soft' : 'border-stone-200 bg-white text-stone-500 hover:border-brand-300'">
+                      {{ amount }}
+                    </button>
+                  }
+                </div>
+              </div>
+            </div>
+
+            <button type="button" (click)="start()" class="btn-primary h-16 min-w-52 px-8 text-base">
+              <app-icon name="play" [size]="20" />
+              ابدأ {{ effectiveCount() }} سؤالاً
+            </button>
+          </div>
+        </section>
+
+        <div class="mt-10 grid gap-5 md:grid-cols-2">
+          <div class="rounded-3xl bg-brand-50/70 p-7">
+            <h3 class="mb-5 flex items-center gap-2 text-lg font-black text-ink">
+              <app-icon name="target" [size]="20" class="text-brand-600" />
+              قبل أن تبدأ
+            </h3>
+            <ul class="space-y-3.5 text-sm leading-relaxed text-stone-600">
+              <li class="flex items-start gap-2.5">
+                <app-icon name="check" [size]="17" class="mt-0.5 shrink-0 text-brand-600" />
+                الاختبار الشامل: <span class="num font-black text-ink">60</span> سؤالاً خلال
+                <span class="num font-black text-ink">60</span> دقيقة.
+              </li>
+              <li class="flex items-start gap-2.5">
+                <app-icon name="check" [size]="17" class="mt-0.5 shrink-0 text-brand-600" />
+                علامة النجاح <span class="num font-black text-ink">51/60</span>، أي
+                <span class="num font-black text-ink">{{ passMark }}%</span>.
+              </li>
+              <li class="flex items-start gap-2.5">
+                <app-icon name="check" [size]="17" class="mt-0.5 shrink-0 text-brand-600" />
+                يمكنك مراجعة كل خطأ مع الإجابة الصحيحة بعد التسليم.
+              </li>
+            </ul>
+          </div>
+
+          <div class="rounded-3xl bg-brand-500 p-7 text-on-brand">
+            <h3 class="text-lg font-black">تعلّم الإشارات قبل الاختبار</h3>
+            <p class="mt-2 text-sm leading-relaxed text-on-brand/70">
+              راجع بطاقات الإشارات التفاعلية أولاً؛ اضغط على البطاقة لترى معناها وما يجب فعله على الطريق.
+            </p>
+            <button type="button" (click)="mode.set('signs')" class="btn-dark mt-5 w-full">
+              <app-icon name="sign" [size]="18" />
+              بطاقات الإشارات المرورية
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+  }
+
+  <!-- ============================ Exam: running ============================ -->
+  @if (stage() === 'running') {
+    <section class="bg-white py-10 md:py-14">
+      <div class="container-page max-w-4xl">
+        <!-- Sticky status bar: progress, counter and clock stay visible while
+             the student scrolls a long question on mobile. -->
+        <div class="exam-cockpit sticky top-[136px] z-40 -mx-1 mb-8 rounded-2xl border border-stone-200/80 bg-white/90 px-4 py-3 shadow-soft backdrop-blur-xl lg:top-[188px]">
+          <div class="flex items-center justify-between gap-4">
+            <p class="text-sm font-bold text-stone-600">
+              <span class="hidden sm:inline">{{ examTitle() }} · </span>السؤال <span class="num text-lg font-black text-ink">{{ index() + 1 }}</span>
+              <span class="num text-stone-400">/ {{ deck().length }}</span>
+            </p>
+
+            <div class="flex items-center gap-3">
+              <span class="hidden text-xs font-bold text-stone-500 sm:inline">
+                أُجيب <span class="num">{{ answeredCount() }}</span> من <span class="num">{{ deck().length }}</span>
+              </span>
+              @if (timed()) {
+                <span
+                  class="num flex items-center gap-1.5 rounded-xl px-3.5 py-2 text-base font-black tabular-nums transition-colors"
+                  [class]="clockCritical() ? 'bg-red-50 text-red-600' : 'bg-brand-50 text-brand-700'"
+                  role="timer"
+                  [attr.aria-live]="clockCritical() ? 'polite' : 'off'">
+                  <app-icon name="timer" [size]="17" />
+                  {{ clock() }}
+                </span>
+              }
+            </div>
+          </div>
+
+          <div class="relative mt-3 h-2 overflow-hidden rounded-full bg-stone-100" aria-hidden="true">
+            <div class="absolute inset-y-0 start-0 rounded-full bg-brand-200 transition-all duration-500" [style.width.%]="positionProgress()"></div>
+            <div class="absolute inset-y-0 start-0 rounded-full bg-brand-500 transition-all duration-500" [style.width.%]="progress()"></div>
+          </div>
+          <div class="mt-1.5 flex justify-between text-[10px] font-bold text-stone-400">
+            <span>{{ progress() }}% مُجاب</span>
+            <span>{{ unansweredCount() }} متبقٍ</span>
+          </div>
+        </div>
+
+        <!-- Question -->
+        @for (question of [current()]; track question.id) {
+        <article class="question-stage card p-6 md:p-9">
+          <span class="chip mb-5 bg-brand-50 text-brand-700">
+            <app-icon name="sign" [size]="13" />
+            @switch (current().topic) {
+              @case ('signs') { الإشارات المرورية }
+              @case ('rules') { قواعد السير }
+              @case ('safety') { السلامة المرورية }
+              @case ('vehicle') { المركبة والصيانة }
+            }
+          </span>
+
+          <h2 class="text-xl font-black leading-relaxed text-ink md:text-[1.6rem]">{{ current().text }}</h2>
+
+          @if (current().image) {
+            <figure class="mt-6 flex justify-center rounded-2xl bg-stone-50 p-4">
+              <img
+                [src]="current().image"
+                [alt]="'صورة توضيحية للسؤال: ' + current().text"
+                class="max-h-72 w-auto rounded-xl object-contain"
+                loading="lazy"
+                referrerpolicy="no-referrer" />
+            </figure>
+          }
+
+          <div class="mt-8 space-y-3" role="radiogroup" [attr.aria-label]="'خيارات السؤال ' + (index() + 1)">
+            @for (opt of current().options; track opt; let i = $index) {
+              <button
+                type="button"
+                (click)="answer(i)"
+                role="radio"
+                [attr.aria-checked]="picked() === i"
+                [style.--option-index]="i"
+                class="answer-option flex w-full items-center gap-4 rounded-2xl border-2 p-4 text-start text-[15px] font-semibold transition-all md:p-5"
+                [class]="
+                  picked() === i
+                    ? 'border-brand-500 bg-brand-50 text-ink shadow-soft'
+                    : 'border-brand-100 bg-white text-stone-700 hover:border-brand-300 hover:bg-brand-50/40'
+                ">
+                <span
+                  class="grid h-9 w-9 shrink-0 place-items-center rounded-xl text-sm font-black transition-colors"
+                  [class]="picked() === i ? 'bg-brand-500 text-on-brand' : 'bg-brand-50 text-brand-700'">
+                  {{ optionLetter(i) }}
+                </span>
+                <span class="flex-1 leading-relaxed">{{ opt }}</span>
+                @if (picked() === i) {
+                  <app-icon name="check-circle" [size]="22" class="shrink-0 text-brand-600" />
+                }
+              </button>
+            }
+          </div>
+        </article>
+        }
+
+        <!-- Navigation -->
+        <div class="exam-dock sticky bottom-3 z-30 mt-6 flex items-center justify-between gap-3 rounded-2xl border border-stone-200/80 bg-white/90 p-2 shadow-lifted backdrop-blur-xl sm:static sm:border-0 sm:bg-transparent sm:p-0 sm:shadow-none">
+          <button type="button" (click)="prev()" [disabled]="index() === 0" class="btn-outline h-12">
+            <app-icon name="chevron-start" [size]="18" />
+            السابق
+          </button>
+
+          @if (index() === deck().length - 1) {
+            <button
+              type="button"
+              (click)="requestFinish()"
+              [disabled]="!currentAnswered()"
+              class="btn-primary h-12 px-7">
+              <app-icon name="check" [size]="18" />
+              سلّم الاختبار
+            </button>
+          } @else {
+            <button
+              type="button"
+              (click)="next()"
+              [disabled]="!currentAnswered()"
+              class="btn-dark h-12 px-7"
+              [attr.title]="currentAnswered() ? null : 'أجب على السؤال أولاً للانتقال للتالي'">
+              التالي
+              <app-icon name="arrow-start" [size]="18" />
+            </button>
+          }
+        </div>
+
+        @if (!currentAnswered()) {
+          <p class="mt-3 text-center text-xs font-bold text-brand-700 sm:text-end">
+            أجب على السؤال الحالي أولاً للانتقال إلى التالي.
+          </p>
+        }
+
+        <!-- Question navigator -->
+        <div class="mt-10 card p-6">
+          <div class="mb-4 flex flex-wrap items-center justify-between gap-3">
+            <h3 class="text-sm font-black text-ink">خريطة الأسئلة</h3>
+            <div class="flex flex-wrap items-center gap-4 text-[11px] font-bold text-stone-500">
+              <span class="flex items-center gap-1.5"><span class="h-3 w-3 rounded bg-brand-500"></span> السؤال الحالي</span>
+              <span class="flex items-center gap-1.5"><span class="h-3 w-3 rounded bg-brand-200"></span> مُجاب</span>
+              <span class="flex items-center gap-1.5"><span class="h-3 w-3 rounded border border-stone-300 bg-white"></span> فارغ</span>
+            </div>
+          </div>
+
+          <div class="flex flex-wrap gap-2">
+            @for (q of deck(); track q.id; let i = $index) {
+              <button
+                type="button"
+                (click)="goTo(i)"
+                [disabled]="i > furthest()"
+                class="num grid h-10 w-10 place-items-center rounded-xl border text-sm font-bold transition-all disabled:cursor-not-allowed disabled:opacity-40"
+                [class]="
+                  pillState(i) === 'current'
+                    ? 'border-brand-500 bg-brand-500 text-on-brand shadow-soft'
+                    : pillState(i) === 'answered'
+                      ? 'border-brand-200 bg-brand-100 text-brand-800'
+                      : 'border-stone-200 bg-white text-stone-400 hover:border-brand-300'
+                "
+                [attr.aria-label]="'الانتقال إلى السؤال ' + (i + 1)"
+                [attr.aria-current]="i === index() ? 'true' : null">
+                {{ i + 1 }}
+              </button>
+            }
+          </div>
+
+          <div class="mt-6 flex flex-col gap-3 border-t border-brand-100 pt-5 sm:flex-row sm:items-center sm:justify-between">
+            @if (!allAnswered()) {
+              <p class="flex items-center gap-2 text-xs font-semibold text-brand-700">
+                <app-icon name="info" [size]="15" />
+                بقي <span class="num">{{ deck().length - answeredCount() }}</span> سؤالاً بلا إجابة.
+              </p>
+            } @else {
+              <p class="flex items-center gap-2 text-xs font-semibold text-emerald-700">
+                <app-icon name="check-circle" [size]="15" />
+                أجبت على جميع الأسئلة — يمكنك التسليم الآن.
+              </p>
+            }
+            <div class="flex gap-2.5">
+              <button type="button" (click)="restart()" class="btn-ghost h-11 text-xs">
+                <app-icon name="x" [size]="16" />
+                إلغاء
+              </button>
+              <button type="button" (click)="requestFinish()" class="btn-primary h-11 text-xs">
+                <app-icon name="check" [size]="16" />
+                سلّم الآن
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  }
+
+  <!-- ============================ Exam: result ============================ -->
+  @if (stage() === 'result') {
+    <section class="bg-white py-14 md:py-20">
+      <div class="container-page max-w-4xl">
+        <!-- Score card -->
+        <div
+          class="result-card relative overflow-hidden rounded-[2rem] border-2 p-8 text-center md:p-12"
+          [class]="passed() ? 'border-emerald-200 bg-emerald-50/60' : 'border-brand-200 bg-brand-50/60'">
+          @if (passed()) {
+            <div class="confetti" aria-hidden="true">
+              @for (piece of [1,2,3,4,5,6,7,8,9,10,11,12]; track piece) {
+                <i [style.--piece]="piece"></i>
+              }
+            </div>
+          }
+          <span
+            class="mx-auto mb-6 grid h-20 w-20 place-items-center rounded-full"
+            [class]="passed() ? 'bg-emerald-500 text-white' : 'bg-brand-500 text-on-brand'">
+            <app-icon [name]="passed() ? 'trophy' : 'refresh'" [size]="38" />
+          </span>
+
+          <h2 class="text-3xl font-black text-ink md:text-4xl">
+            {{ passed() ? 'ناجح — أحسنت!' : 'لم تصل لعلامة النجاح بعد' }}
+          </h2>
+          <p class="mx-auto mt-4 max-w-lg text-[17px] leading-relaxed text-stone-600">
+            @if (passed()) {
+              نتيجتك تفوق علامة النجاح. راجع أخطاءك أدناه، وأعد الاختبار بموضوع آخر لتغطية البنك كاملاً.
+            } @else {
+              علامة النجاح <span class="num font-black">{{ passMark }}%</span>. راجع الإجابات الصحيحة أدناه ثم أعد المحاولة.
+            }
+          </p>
+
+          <div class="mt-9 flex flex-wrap items-center justify-center gap-5">
+            <div
+              class="score-ring grid h-36 w-36 place-items-center rounded-full"
+              [style.--score]="percent()"
+              [class.score-ring-pass]="passed()">
+              <div class="grid h-[112px] w-[112px] place-items-center rounded-full bg-white shadow-inner">
+                <div>
+                  <p class="num text-4xl font-black" [class]="passed() ? 'text-emerald-600' : 'text-brand-600'">{{ percent() }}%</p>
+                  <p class="mt-1 text-[11px] font-bold text-stone-500">النتيجة</p>
+                </div>
+              </div>
+            </div>
+            <div class="rounded-2xl bg-white px-7 py-5 shadow-sm">
+              <p class="num text-5xl font-black text-ink">{{ score() }}<span class="text-2xl text-stone-400">/{{ deck().length }}</span></p>
+              <p class="mt-1 text-xs font-bold text-stone-500">إجابات صحيحة</p>
+            </div>
+            @if (best() !== null) {
+              <div class="rounded-2xl bg-white px-7 py-5 shadow-sm">
+                <p class="num text-5xl font-black text-brand-600">{{ best() }}%</p>
+                <p class="mt-1 text-xs font-bold text-stone-500">أفضل نتيجة لك</p>
+              </div>
+            }
+          </div>
+
+          <div class="mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row">
+            <button type="button" (click)="retrySame()" class="btn-primary h-14 px-7 text-base">
+              <app-icon name="refresh" [size]="19" />
+              أعد الاختبار
+            </button>
+            <button type="button" (click)="restart()" class="btn-outline h-14 px-7 text-base">
+              <app-icon name="grid" [size]="19" />
+              غيّر الإعدادات
+            </button>
+          </div>
+        </div>
+
+        <!-- Per-topic breakdown -->
+        <div class="mt-10 card p-7 md:p-8">
+          <h3 class="mb-6 flex items-center gap-2 text-lg font-black text-ink">
+            <app-icon name="target" [size]="20" class="text-brand-600" />
+            أداؤك حسب الموضوع
+          </h3>
+          <div class="space-y-5">
+            @for (row of byTopic(); track row.id) {
+              <div>
+                <div class="mb-2 flex items-baseline justify-between gap-3">
+                  <span class="text-sm font-bold text-ink">{{ row.label }}</span>
+                  <div class="flex items-center gap-3">
+                    @if (row.percent < passMark) {
+                      <button type="button" (click)="practiceTopic(row.id)" class="text-xs font-black text-brand-700 underline-offset-4 hover:underline">
+                        تدرّب على الموضوع
+                      </button>
+                    }
+                    <span class="text-sm font-bold text-stone-500">
+                      <span class="num font-black" [class]="row.percent >= passMark ? 'text-emerald-600' : 'text-brand-600'">{{ row.percent }}%</span>
+                      <span class="num text-stone-400"> ({{ row.correct }}/{{ row.total }})</span>
+                    </span>
+                  </div>
+                </div>
+                <div class="h-2.5 overflow-hidden rounded-full bg-stone-100">
+                  <div
+                    class="h-full rounded-full transition-all duration-700"
+                    [class]="row.percent >= passMark ? 'bg-emerald-500' : 'bg-brand-500'"
+                    [style.width.%]="row.percent"></div>
+                </div>
+              </div>
+            }
+          </div>
+        </div>
+
+        <!-- Review -->
+        <div class="mt-10">
+          <h3 class="mb-6 flex items-center gap-2 text-xl font-black text-ink">
+            <app-icon name="clipboard" [size]="22" class="text-brand-600" />
+            مراجعة الأخطاء
+            <span class="num chip bg-brand-50 text-brand-700">{{ wrong().length }}</span>
+          </h3>
+
+          @if (wrong().length === 0) {
+            <div class="card flex items-center gap-4 p-7">
+              <app-icon name="check-circle" [size]="34" class="shrink-0 text-emerald-600" />
+              <p class="text-[15px] font-bold text-ink">
+                لا أخطاء على الإطلاق — علامة كاملة. جاهز للاختبار الحقيقي.
+              </p>
+            </div>
+          } @else {
+            <div class="space-y-4">
+              @for (row of wrong(); track row.q.id) {
+                <article class="card overflow-hidden">
+                  <div class="border-s-4 border-red-400 p-6">
+                    <h4 class="text-[17px] font-black leading-relaxed text-ink">{{ row.q.text }}</h4>
+
+                    @if (row.q.image) {
+                      <figure class="mt-4 flex justify-center rounded-2xl bg-stone-50 p-3">
+                        <img
+                          [src]="row.q.image"
+                          [alt]="'صورة توضيحية للسؤال: ' + row.q.text"
+                          class="max-h-52 w-auto rounded-xl object-contain"
+                          loading="lazy"
+                          referrerpolicy="no-referrer" />
+                      </figure>
+                    }
+
+                    <div class="mt-5 space-y-2">
+                      @if (row.given === null) {
+                        <p class="flex items-center gap-2 rounded-xl bg-stone-50 p-3.5 text-sm font-bold text-stone-500">
+                          <app-icon name="info" [size]="17" />
+                          لم تُجب على هذا السؤال.
+                        </p>
+                      } @else {
+                        <p class="flex items-start gap-2.5 rounded-xl bg-red-50 p-3.5 text-sm text-red-800">
+                          <app-icon name="x-circle" [size]="18" class="mt-0.5 shrink-0" />
+                          <span><span class="font-black">إجابتك:</span> {{ row.q.options[row.given] }}</span>
+                        </p>
+                      }
+                      <p class="flex items-start gap-2.5 rounded-xl bg-emerald-50 p-3.5 text-sm text-emerald-900">
+                        <app-icon name="check-circle" [size]="18" class="mt-0.5 shrink-0" />
+                        <span><span class="font-black">الإجابة الصحيحة:</span> {{ row.q.options[row.q.answer] }}</span>
+                      </p>
+                    </div>
+
+                    @if (row.q.explanation) {
+                      <p class="mt-4 rounded-2xl bg-brand-50/70 p-4 text-sm leading-relaxed text-stone-700">
+                        <span class="font-black text-brand-700">الشرح: </span>{{ row.q.explanation }}
+                      </p>
+                    }
+                  </div>
+                </article>
+              }
+            </div>
+          }
+        </div>
+
+        <div class="mt-12 rounded-[2rem] bg-asphalt-900 p-8 text-center text-white md:p-10">
+          <h3 class="text-2xl font-black">النظري وحده لا يكفي</h3>
+          <p class="mx-auto mt-4 max-w-lg leading-relaxed text-white/60">
+            الجزء الذي يُرسِب أكثر الطلاب هو العملي. احجز درسك الأول مع المدرب وابدأ من الساحة المغلقة.
+          </p>
+          <div class="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
+            <a routerLink="/booking" class="btn-primary h-14 px-7 text-base">
+              <app-icon name="calendar" [size]="19" />
+              احجز درسك الأول
+            </a>
+            <a [href]="tel" class="btn-outline h-14 border-white/20 bg-white/5 px-7 text-base text-white hover:bg-white/10">
+              <app-icon name="phone" [size]="19" />
+              <span class="num">{{ site.phoneDisplay }}</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+  }
+}
+
+<!-- ============================ Sign flashcards ============================ -->
+@if (mode() === 'signs') {
+  <section class="bg-white py-14 md:py-20">
+    <div class="container-page">
+      <div class="mb-10 text-center">
+        <span class="eyebrow">بطاقات تعليمية</span>
+        <h2 class="h-section mt-5">تعلّم الإشارات المرورية</h2>
+        <p class="p-section">
+          اضغط على أي بطاقة لترى معناها وما يجب عليك فعله. تعلّم قراءة الشكل واللون أولاً —
+          المثلث يحذّر، الدائرة الحمراء تمنع، والدائرة الزرقاء تُلزِم.
+        </p>
+      </div>
+
+      <!-- Colour legend: the rule behind the whole system. -->
+      <div class="mx-auto mb-10 grid max-w-4xl gap-3 sm:grid-cols-2 lg:grid-cols-4">
+        @for (key of shapeKeys; track key) {
+          <div class="flex items-start gap-3 rounded-2xl bg-brand-50/60 p-4">
+            <span class="mt-1 h-3 w-3 shrink-0 rounded-full" [class]="shapes[key].dot"></span>
+            <span>
+              <span class="block text-sm font-black text-ink">{{ shapes[key].label }}</span>
+              <span class="mt-0.5 block text-xs leading-relaxed text-stone-500">{{ shapes[key].hint }}</span>
+            </span>
+          </div>
+        }
+      </div>
+
+      <!-- Filters -->
+      <div class="mb-8 flex flex-wrap items-center justify-between gap-4">
+        <div class="hide-scrollbar flex gap-2.5 overflow-x-auto pb-1">
+          <button
+            type="button"
+            (click)="shapeFilter.set('all')"
+            [attr.aria-pressed]="shapeFilter() === 'all'"
+            class="shrink-0 rounded-2xl border px-4 py-2.5 text-sm font-bold transition-all"
+            [class]="shapeFilter() === 'all' ? 'border-brand-500 bg-brand-500 text-on-brand' : 'border-brand-200 bg-white text-stone-600 hover:border-brand-400'">
+            الكل ({{ signs.length }})
+          </button>
+          @for (key of shapeKeys; track key) {
+            <button
+              type="button"
+              (click)="shapeFilter.set(key)"
+              [attr.aria-pressed]="shapeFilter() === key"
+              class="shrink-0 rounded-2xl border px-4 py-2.5 text-sm font-bold transition-all"
+              [class]="shapeFilter() === key ? 'border-brand-500 bg-brand-500 text-on-brand' : 'border-brand-200 bg-white text-stone-600 hover:border-brand-400'">
+              {{ shapes[key].label }}
+            </button>
+          }
+        </div>
+
+        <button type="button" (click)="flipAll()" class="btn-outline h-11 shrink-0 text-xs">
+          <app-icon name="refresh" [size]="16" />
+          اقلب كل البطاقات
+        </button>
+      </div>
+
+      <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+        @for (sign of visibleSigns(); track sign.id) {
+          <button
+            type="button"
+            (click)="flip(sign.id)"
+            [attr.aria-expanded]="isFlipped(sign.id)"
+            class="card-hover flex min-h-[280px] flex-col items-center p-6 text-center">
+            <app-traffic-sign [art]="sign.id" [size]="110" [label]="sign.name" />
+
+            <h3 class="mt-5 text-base font-black text-ink">{{ sign.name }}</h3>
+            <span class="chip mt-2" [class]="
+              sign.shape === 'warning' ? 'bg-amber-50 text-amber-700'
+              : sign.shape === 'prohibition' ? 'bg-red-50 text-red-700'
+              : sign.shape === 'mandatory' ? 'bg-blue-50 text-blue-700'
+              : 'bg-emerald-50 text-emerald-700'
+            ">
+              {{ shapes[sign.shape].label }}
+            </span>
+
+            @if (isFlipped(sign.id)) {
+              <div class="mt-4 animate-fade-in space-y-3 border-t border-brand-100 pt-4 text-start">
+                <p class="text-[13px] leading-relaxed text-stone-600">{{ sign.meaning }}</p>
+                <p class="rounded-xl bg-brand-50 p-3 text-[13px] leading-relaxed text-stone-700">
+                  <span class="font-black text-brand-700">ماذا تفعل: </span>{{ sign.action }}
+                </p>
+              </div>
+            } @else {
+              <span class="mt-4 flex items-center gap-1.5 text-xs font-bold text-brand-600">
+                <app-icon name="chevron-down" [size]="15" />
+                اضغط لرؤية المعنى
+              </span>
+            }
+          </button>
+        }
+      </div>
+
+      <div class="mt-14 rounded-[2rem] bg-brand-500 p-8 text-center md:p-10">
+        <h3 class="text-2xl font-black text-on-brand">حفظت الإشارات؟ اختبر نفسك</h3>
+        <p class="mx-auto mt-4 max-w-lg font-semibold text-on-brand/75">
+          جرّب اختباراً كامل الأسئلة عن الإشارات المرورية وحدها.
+        </p>
+        <button type="button" (click)="startSignsExam()" class="btn-dark mt-7 h-14 px-8 text-base">
+          <app-icon name="play" [size]="19" />
+          اختبار الإشارات المرورية
+        </button>
+      </div>
+    </div>
+  </section>
+}

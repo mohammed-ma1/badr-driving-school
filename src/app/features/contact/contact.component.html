@@ -1,0 +1,62 @@
+<app-page-hero
+  eyebrow="تواصل معنا"
+  title="نحن هنا للإجابة على أسئلتك"
+  subtitle="اترك بياناتك ونعاود الاتصال بك، أو تواصل مباشرة على الهاتف والواتساب خلال أوقات العمل." />
+
+<section class="bg-white py-20">
+  <div class="container-page grid gap-12 lg:grid-cols-[1.25fr_.75fr]">
+    <div>
+      <p class="text-sm font-bold text-brand-500">ابقَ على تواصل</p>
+      <h2 class="mt-3 text-3xl font-bold text-ink">سجل الآن في دروس تعلم القيادة مع المدرب {{ coach.name }}</h2>
+
+      @if (!sent()) {
+        <form class="mt-8 space-y-4" (submit)="$event.preventDefault(); send()">
+          <input class="input !rounded-none" type="text" placeholder="الاسم *" [value]="name()" (input)="name.set(value($event))" autocomplete="name" />
+          <input class="input !rounded-none" type="number" placeholder="العمر" [value]="age()" (input)="age.set(value($event))" min="16" max="80" />
+          <input class="input !rounded-none" type="text" inputmode="numeric" placeholder="الرقم الوطني" [value]="nationalId()" (input)="nationalId.set(value($event))" />
+          <select class="input !rounded-none" [value]="licenseCategory()" (change)="licenseCategory.set(value($event))">
+            <option value="">حدد الفئة المطلوبة...</option>
+            <option value="الفئة الأولى">الفئة الأولى — دراجات</option>
+            <option value="الفئة الثانية">الفئة الثانية — زراعي وإنشائي</option>
+            <option value="الفئة الثالثة">الفئة الثالثة — خصوصي</option>
+            <option value="الفئة الرابعة">الفئة الرابعة — عمومي</option>
+            <option value="الفئة الخامسة">الفئة الخامسة — محورين</option>
+            <option value="الفئة السادسة">الفئة السادسة — شاحنات وحافلات</option>
+            <option value="الفئة السابعة">الفئة السابعة — ذوي الاحتياجات الخاصة</option>
+          </select>
+          <input class="input num !rounded-none text-start" dir="ltr" type="tel" placeholder="رقم الهاتف *" [value]="phone()" (input)="phone.set(value($event))" autocomplete="tel" />
+          <select class="input !rounded-none" [value]="reason()" (change)="reason.set(value($event))">
+            @for (r of reasons; track r) { <option [value]="r">{{ r }}</option> }
+          </select>
+          <textarea class="input min-h-32 resize-y !rounded-none" placeholder="رسالة *" [value]="message()" (input)="message.set(value($event))"></textarea>
+          <button type="submit" [disabled]="!canSend()" class="rounded bg-brand-500 px-9 py-3 text-sm font-bold text-white hover:bg-brand-600 disabled:cursor-not-allowed disabled:opacity-50">
+            سجل الآن
+          </button>
+        </form>
+      } @else {
+        <div class="mt-8 border border-emerald-200 bg-emerald-50 p-7">
+          <h3 class="text-xl font-bold text-emerald-800">تم تجهيز رسالتك</h3>
+          <p class="mt-2 text-sm text-emerald-700">أرسل الرسالة الجاهزة في واتساب ليؤكد المدرب موعدك.</p>
+          <a [href]="waLink()" target="_blank" rel="noopener" class="mt-5 inline-flex bg-[#25d366] px-7 py-3 font-bold text-white">افتح واتساب</a>
+        </div>
+      }
+    </div>
+
+    <aside class="space-y-5">
+      <div class="border border-stone-200 bg-white p-6">
+        <p class="text-sm font-bold text-brand-500">عمان، عين الباشا</p>
+        <p class="mt-3 text-sm leading-7 text-stone-600">{{ site.location.address }}</p>
+        <a [href]="map" target="_blank" rel="noopener" class="mt-3 inline-flex text-sm font-bold text-brand-600">عرض الموقع</a>
+      </div>
+      <div class="border border-stone-200 bg-white p-6">
+        <p class="text-sm font-bold text-brand-500">إجراء مكالمة</p>
+        <a [href]="tel" class="num mt-3 block text-xl font-bold text-ink">{{ site.phoneDisplay }}</a>
+        <p class="num mt-2 text-sm text-stone-500">{{ site.hours.open }} - {{ site.hours.close }}</p>
+      </div>
+      <div class="border border-stone-200 bg-white p-6">
+        <p class="text-sm font-bold text-brand-500">{{ site.hours.days }}</p>
+        <p class="num mt-3 text-sm text-stone-600">{{ site.hours.open }} - {{ site.hours.close }}</p>
+      </div>
+    </aside>
+  </div>
+</section>

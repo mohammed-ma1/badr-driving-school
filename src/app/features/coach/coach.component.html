@@ -1,0 +1,255 @@
+<!-- ============================ Page head ============================ -->
+<section class="relative overflow-hidden bg-gradient-to-b from-brand-50 to-white pb-14 pt-40 md:pb-20 md:pt-44">
+  <div class="pointer-events-none absolute inset-0 road-bg opacity-50" aria-hidden="true"></div>
+
+  <div class="container-page relative grid items-center gap-12 lg:grid-cols-[1fr_1.1fr]">
+    <div class="relative order-2 lg:order-1">
+      <div class="overflow-hidden rounded-[2rem] border-4 border-white shadow-lifted">
+        <img [src]="coach.photo" [alt]="'المدرب ' + coach.name" class="w-full object-cover" />
+      </div>
+      <span class="absolute -bottom-4 start-6 chip bg-asphalt-900 px-4 py-2 text-white shadow-lifted">
+        <app-icon name="check-circle" [size]="15" class="text-brand-400" />
+        مدرب معتمد
+      </span>
+    </div>
+
+    <div class="order-1 animate-fade-in lg:order-2">
+      <nav class="mb-6 flex items-center gap-2 text-sm text-stone-500" aria-label="مسار التنقل">
+        <a routerLink="/" class="hover:text-brand-600">الرئيسية</a>
+        <app-icon name="chevron-start" [size]="14" />
+        <span class="font-bold text-ink">عن المدرب</span>
+      </nav>
+
+      <span class="eyebrow">{{ coach.title }}</span>
+      <h1 class="mt-5 text-[clamp(2rem,5.5vw,3.25rem)] font-black leading-tight text-ink">{{ coach.name }}</h1>
+      <p class="mt-6 text-lg leading-relaxed text-stone-600">{{ coach.intro }}</p>
+
+      <div class="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-4">
+        <div class="card p-4 text-center">
+          <p class="num text-2xl font-black text-brand-600">+{{ coach.yearsExperience }}</p>
+          <p class="mt-1 text-[11px] font-bold text-stone-500">سنة خبرة</p>
+        </div>
+        <div class="card p-4 text-center">
+          <p class="num text-2xl font-black text-brand-600">+{{ coach.graduates }}</p>
+          <p class="mt-1 text-[11px] font-bold text-stone-500">طالب متخرّج</p>
+        </div>
+        <div class="card p-4 text-center">
+          <p class="num text-2xl font-black text-brand-600">{{ coach.successRate }}%</p>
+          <p class="mt-1 text-[11px] font-bold text-stone-500">نجاح أول مرة</p>
+        </div>
+        <div class="card p-4 text-center">
+          <p class="num text-2xl font-black text-brand-600">7</p>
+          <p class="mt-1 text-[11px] font-bold text-stone-500">فئات قيادة</p>
+        </div>
+      </div>
+
+      <div class="mt-8 flex flex-col gap-3 sm:flex-row">
+        <a [href]="tel" class="btn-primary h-14 px-7 text-base">
+          <app-icon name="phone" [size]="19" />
+          <span class="num">{{ site.phoneDisplay }}</span>
+        </a>
+        <a routerLink="/booking" class="btn-outline h-14 px-7 text-base">
+          <app-icon name="calendar" [size]="19" />
+          احجز درساً معه
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ Story ============================ -->
+<section class="bg-white py-16 md:py-20">
+  <div class="container-page grid gap-12 lg:grid-cols-[1.5fr_1fr]">
+    <div>
+      <span class="eyebrow">القصة</span>
+      <h2 class="h-section mt-5 text-start">من سائق على الطرق الخارجية إلى مدرب لآلاف السائقين</h2>
+      <div class="mt-7 space-y-5">
+        @for (para of coach.story; track para) {
+          <p class="text-[17px] leading-[1.95] text-stone-600">{{ para }}</p>
+        }
+      </div>
+
+      <!-- Pull quote: the one line that sums the whole page up. -->
+      <blockquote class="mt-10 rounded-3xl border-s-[6px] border-brand-500 bg-brand-50/60 p-7">
+        <app-icon name="quote" [size]="30" class="mb-3 text-brand-400" />
+        <p class="text-xl font-bold leading-relaxed text-ink">
+          «أنا لا أخرّج حاملي رخص، أنا أخرّج سائقين آمنين. الرخصة ورقة، أما العادة التي تتعلّمها في أول عشرة دروس فهي التي تبقى معك ثلاثين سنة.»
+        </p>
+        <footer class="mt-4 text-sm font-black text-brand-700">— {{ coach.name }}</footer>
+      </blockquote>
+    </div>
+
+    <aside class="space-y-5">
+      <div class="card p-6">
+        <h3 class="mb-5 flex items-center gap-2 text-lg font-black text-ink">
+          <app-icon name="medal" [size]="20" class="text-brand-600" />
+          الشهادات والاعتمادات
+        </h3>
+        <ul class="space-y-3.5">
+          @for (cert of coach.certifications; track cert) {
+            <li class="flex items-start gap-2.5 text-sm leading-relaxed text-stone-600">
+              <app-icon name="check" [size]="17" class="mt-0.5 shrink-0 text-emerald-600" />
+              {{ cert }}
+            </li>
+          }
+        </ul>
+      </div>
+
+      <div class="card p-6">
+        <h3 class="mb-5 flex items-center gap-2 text-lg font-black text-ink">
+          <app-icon name="info" [size]="20" class="text-brand-600" />
+          معلومات سريعة
+        </h3>
+        <dl class="space-y-4 text-sm">
+          <div class="flex justify-between gap-4 border-b border-brand-100 pb-3">
+            <dt class="text-stone-500">اللغات</dt>
+            <dd class="font-bold text-ink">{{ coach.languages.join(' · ') }}</dd>
+          </div>
+          <div class="flex justify-between gap-4 border-b border-brand-100 pb-3">
+            <dt class="text-stone-500">الفئات المُدرَّبة</dt>
+            <dd class="font-bold text-ink">من الأولى حتى السابعة</dd>
+          </div>
+          <div class="flex justify-between gap-4 border-b border-brand-100 pb-3">
+            <dt class="text-stone-500">أوقات العمل</dt>
+            <dd class="font-bold text-ink">{{ site.hours.days }}</dd>
+          </div>
+          <div class="flex justify-between gap-4 border-b border-brand-100 pb-3">
+            <dt class="text-stone-500">الساعات</dt>
+            <dd class="num font-bold text-ink">{{ site.hours.open }} — {{ site.hours.close }}</dd>
+          </div>
+          <div class="flex justify-between gap-4">
+            <dt class="text-stone-500">الموقع</dt>
+            <dd class="font-bold text-ink">{{ site.location.city }}</dd>
+          </div>
+        </dl>
+      </div>
+
+      <div class="rounded-3xl bg-asphalt-900 p-6 text-white">
+        <h3 class="text-lg font-black">تواصل مباشر مع المدرب</h3>
+        <p class="mt-2 text-sm leading-relaxed text-white/60">
+          لا سكرتارية ولا انتظار — الرسالة تصل للمدرب نفسه.
+        </p>
+        <a [href]="waLink" target="_blank" rel="noopener" class="btn-whatsapp mt-5 w-full">
+          <app-icon name="whatsapp" [size]="18" />
+          راسله على واتساب
+        </a>
+        <a [href]="tel" class="btn-primary mt-2.5 w-full">
+          <app-icon name="phone" [size]="18" />
+          <span class="num">{{ site.phoneDisplay }}</span>
+        </a>
+      </div>
+    </aside>
+  </div>
+</section>
+
+<!-- ============================ Timeline ============================ -->
+<section class="bg-brand-50/40 py-16 md:py-24">
+  <div class="container-page max-w-4xl">
+    <div class="mb-14 text-center">
+      <span class="eyebrow">المسيرة</span>
+      <h2 class="h-section mt-5">محطات على الطريق</h2>
+    </div>
+
+    <ol class="relative space-y-8 border-s-[3px] border-dashed border-brand-300 ps-8 md:ps-12">
+      @for (m of coach.milestones; track m.year) {
+        <li class="relative">
+          <span class="absolute -start-[41px] top-1 grid h-[26px] w-[26px] place-items-center rounded-full border-4 border-brand-50 bg-brand-500 md:-start-[57px]" aria-hidden="true"></span>
+          <span class="num chip bg-asphalt-900 text-brand-400">{{ m.year }}</span>
+          <h3 class="mt-3 text-xl font-black text-ink">{{ m.title }}</h3>
+          <p class="mt-2 text-[15px] leading-relaxed text-stone-600">{{ m.body }}</p>
+        </li>
+      }
+    </ol>
+  </div>
+</section>
+
+<!-- ============================ Method ============================ -->
+<section class="bg-white py-16 md:py-24">
+  <div class="container-page">
+    <div class="mb-14 text-center">
+      <span class="eyebrow">منهجية التدريب</span>
+      <h2 class="h-section mt-5">أربع مراحل، بهذا الترتيب تحديداً</h2>
+      <p class="p-section">
+        لأن أكبر خطأ في تعليم القيادة هو إنزال الطالب إلى الشارع قبل أن تصبح حركاته تلقائية.
+      </p>
+    </div>
+
+    <div class="grid gap-6 md:grid-cols-2">
+      @for (stage of coach.method; track stage.n) {
+        <article class="card-hover relative overflow-hidden p-7 ps-8">
+          <span class="num absolute -top-4 -start-3 text-[110px] font-black leading-none text-brand-50" aria-hidden="true">{{ stage.n }}</span>
+          <div class="relative">
+            <span class="mb-5 grid h-14 w-14 place-items-center rounded-2xl bg-brand-500 text-on-brand shadow-soft">
+              <app-icon [name]="stage.icon" [size]="28" />
+            </span>
+            <h3 class="mb-3 text-xl font-black text-ink">
+              <span class="num text-brand-600">المرحلة {{ stage.n }}</span> · {{ stage.title }}
+            </h3>
+            <p class="text-[15px] leading-relaxed text-stone-600">{{ stage.body }}</p>
+          </div>
+        </article>
+      }
+    </div>
+  </div>
+</section>
+
+<!-- ============================ Promises ============================ -->
+<section class="bg-asphalt-900 py-16 text-white md:py-24">
+  <div class="container-page">
+    <div class="mb-14 text-center">
+      <span class="chip border border-brand-400/30 bg-brand-500/15 px-4 py-1.5 text-brand-400">التزامات المدرب</span>
+      <h2 class="mt-5 text-3xl font-black md:text-4xl">أربعة أشياء أتعهّد بها لكل طالب</h2>
+    </div>
+
+    <div class="grid gap-5 md:grid-cols-2">
+      @for (p of promises; track p.title) {
+        <article class="rounded-3xl border border-white/10 bg-white/[0.04] p-7">
+          <span class="mb-5 grid h-12 w-12 place-items-center rounded-2xl bg-brand-500/15 text-brand-400">
+            <app-icon [name]="p.icon" [size]="24" />
+          </span>
+          <h3 class="mb-2.5 text-lg font-black">{{ p.title }}</h3>
+          <p class="text-[15px] leading-relaxed text-white/60">{{ p.body }}</p>
+        </article>
+      }
+    </div>
+  </div>
+</section>
+
+<!-- ============================ Who it suits ============================ -->
+<section class="bg-white py-16 md:py-24">
+  <div class="container-page">
+    <div class="mb-12 text-center">
+      <span class="eyebrow">هل يناسبني؟</span>
+      <h2 class="h-section mt-5">مَن يدرّب المدرب {{ coach.shortName }}؟</h2>
+    </div>
+
+    <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+      @for (a of audiences; track a.title) {
+        <article class="rounded-3xl bg-brand-50/60 p-6">
+          <span class="mb-4 grid h-12 w-12 place-items-center rounded-2xl bg-white text-brand-600 shadow-sm">
+            <app-icon [name]="a.icon" [size]="24" />
+          </span>
+          <h3 class="mb-2 text-base font-black text-ink">{{ a.title }}</h3>
+          <p class="text-sm leading-relaxed text-stone-600">{{ a.body }}</p>
+        </article>
+      }
+    </div>
+
+    <div class="mt-14 rounded-[2rem] bg-brand-500 p-8 text-center md:p-12">
+      <h2 class="text-2xl font-black text-on-brand md:text-3xl">ابدأ مع مدرب تثق به</h2>
+      <p class="mx-auto mt-4 max-w-lg font-semibold text-on-brand/75">
+        اتصل اليوم واسأل ما تريد قبل أن تحجز — المكالمة الأولى بلا أي التزام.
+      </p>
+      <div class="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
+        <a [href]="tel" class="hero-btn bg-asphalt-900 text-white hover:bg-asphalt-700">
+          <app-icon name="phone" [size]="20" />
+          <span class="num">{{ site.phoneDisplay }}</span>
+        </a>
+        <a routerLink="/services" class="hero-btn bg-white text-ink hover:bg-white/90">
+          <app-icon name="car" [size]="20" />
+          الفئات والأسعار
+        </a>
+      </div>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,438 @@
+<!-- ============================ Page head ============================ -->
+<section class="relative overflow-hidden bg-gradient-to-b from-brand-50 to-white pb-14 pt-40 md:pb-16 md:pt-44">
+  <div class="pointer-events-none absolute inset-0 road-bg opacity-50" aria-hidden="true"></div>
+  <div class="container-page relative text-center">
+    <nav class="mb-6 flex items-center justify-center gap-2 text-sm text-stone-500" aria-label="مسار التنقل">
+      <a routerLink="/" class="hover:text-brand-600">الرئيسية</a>
+      <app-icon name="chevron-start" [size]="14" />
+      <span class="font-bold text-ink">احجز موعد</span>
+    </nav>
+    <span class="eyebrow">الحجز في ثلاث خطوات</span>
+    <h1 class="mt-5 text-[clamp(2rem,5.5vw,3.25rem)] font-black leading-tight text-ink">احجز درسك الأول</h1>
+    <p class="p-section">
+      أجب على بضعة أسئلة، وسيصل طلبك للمدرب {{ coach.shortName }} على واتساب مرتّباً وجاهزاً.
+      أو اتصل مباشرة على
+      <a [href]="tel" class="num font-black text-brand-600 underline decoration-brand-300 decoration-2 underline-offset-4">{{ site.phoneDisplay }}</a>
+    </p>
+  </div>
+</section>
+
+<section class="bg-white pb-16 md:pb-24">
+  <div class="container-page max-w-5xl">
+    @if (!submitted()) {
+      <!-- Stepper -->
+      <ol class="mb-10 flex items-center justify-between gap-2">
+        @for (s of steps; track s.n) {
+          <li class="flex flex-1 items-center gap-3">
+            <button
+              type="button"
+              (click)="goToStep(s.n)"
+              class="flex items-center gap-3 text-start"
+              [attr.aria-current]="step() === s.n ? 'step' : null">
+              <span
+                class="grid h-11 w-11 shrink-0 place-items-center rounded-2xl border-2 text-sm font-black transition-all"
+                [class]="
+                  step() === s.n
+                    ? 'border-brand-500 bg-brand-500 text-on-brand shadow-soft'
+                    : step() > s.n
+                      ? 'border-emerald-500 bg-emerald-500 text-white'
+                      : 'border-stone-200 bg-white text-stone-400'
+                ">
+                @if (step() > s.n) {
+                  <app-icon name="check" [size]="18" [strokeWidth]="3" />
+                } @else {
+                  <app-icon [name]="s.icon" [size]="19" />
+                }
+              </span>
+              <span class="hidden sm:block">
+                <span class="num block text-[11px] font-bold text-stone-400">الخطوة {{ s.n }}</span>
+                <span class="block text-sm font-black" [class]="step() >= s.n ? 'text-ink' : 'text-stone-400'">{{ s.title }}</span>
+              </span>
+            </button>
+            @if (s.n < 3) {
+              <span class="h-0.5 flex-1 rounded-full transition-colors" [class]="step() > s.n ? 'bg-emerald-400' : 'bg-stone-200'"></span>
+            }
+          </li>
+        }
+      </ol>
+
+      <div class="grid gap-6 lg:grid-cols-[1.5fr_1fr]">
+        <!-- ==================== Step panels ==================== -->
+        <div class="card p-6 md:p-9">
+          <!-- Step 1 -->
+          @if (step() === 1) {
+            <div class="animate-fade-in space-y-9">
+              <div>
+                <h2 class="text-xl font-black text-ink">ما الفئة التي تريد تعلّمها؟</h2>
+                <div class="mt-5 grid gap-2.5 sm:grid-cols-2">
+                  @for (c of categories; track c.id) {
+                    <button
+                      type="button"
+                      (click)="categoryId.set(c.id)"
+                      [attr.aria-pressed]="categoryId() === c.id"
+                      class="flex items-center gap-3 rounded-2xl border p-4 text-start transition-all"
+                      [class]="categoryId() === c.id ? 'border-brand-500 bg-brand-50' : 'border-brand-200 hover:border-brand-400 hover:bg-brand-50/40'">
+                      <span
+                        class="grid h-11 w-11 shrink-0 place-items-center rounded-xl transition-colors"
+                        [class]="categoryId() === c.id ? 'bg-brand-500 text-on-brand' : 'bg-brand-50 text-brand-600'">
+                        <app-icon [name]="c.icon" [size]="22" />
+                      </span>
+                      <span class="flex-1">
+                        <span class="block text-sm font-black text-ink">{{ c.label }}</span>
+                        <span class="block text-xs text-stone-500">{{ c.subtitle }}</span>
+                      </span>
+                    </button>
+                  }
+                </div>
+              </div>
+
+              @if (showTransmission()) {
+                <div class="animate-fade-in">
+                  <h2 class="text-xl font-black text-ink">ناقل الحركة</h2>
+                  <p class="mt-1.5 text-sm text-stone-500">الأوتوماتيك أسرع للرخصة، والعادي أوسع لاحقاً.</p>
+                  <div class="mt-4 grid gap-2.5 sm:grid-cols-3">
+                    @for (t of transmissionOptions; track t.id) {
+                      <button
+                        type="button"
+                        (click)="transmission.set(t.id)"
+                        [attr.aria-pressed]="transmission() === t.id"
+                        class="rounded-2xl border p-4 text-sm font-bold transition-all"
+                        [class]="transmission() === t.id ? 'border-brand-500 bg-brand-500 text-on-brand' : 'border-brand-200 text-stone-600 hover:border-brand-400'">
+                        {{ t.label }}
+                      </button>
+                    }
+                  </div>
+                </div>
+              }
+
+              <div>
+                <h2 class="text-xl font-black text-ink">ما مستوى خبرتك الحالي؟</h2>
+                <p class="mt-1.5 text-sm text-stone-500">هذا يحدّد من أين تبدأ خطة دروسك.</p>
+                <div class="mt-4 space-y-2.5">
+                  @for (e of experienceOptions; track e.id) {
+                    <button
+                      type="button"
+                      (click)="experience.set(e.id)"
+                      [attr.aria-pressed]="experience() === e.id"
+                      class="flex w-full items-center gap-3.5 rounded-2xl border p-4 text-start transition-all"
+                      [class]="experience() === e.id ? 'border-brand-500 bg-brand-50' : 'border-brand-200 hover:border-brand-400 hover:bg-brand-50/40'">
+                      <span
+                        class="grid h-5 w-5 shrink-0 place-items-center rounded-full border-2 transition-colors"
+                        [class]="experience() === e.id ? 'border-brand-500' : 'border-stone-300'">
+                        @if (experience() === e.id) {
+                          <span class="h-2.5 w-2.5 rounded-full bg-brand-500"></span>
+                        }
+                      </span>
+                      <span class="flex-1">
+                        <span class="block text-sm font-black text-ink">{{ e.label }}</span>
+                        <span class="block text-xs text-stone-500">{{ e.note }}</span>
+                      </span>
+                    </button>
+                  }
+                </div>
+              </div>
+            </div>
+          }
+
+          <!-- Step 2 -->
+          @if (step() === 2) {
+            <div class="animate-fade-in space-y-9">
+              <div>
+                <h2 class="text-xl font-black text-ink">
+                  أي الأيام تناسبك؟
+                  <span class="text-sm font-bold text-brand-600">(اختر ما شئت)</span>
+                </h2>
+                <div class="mt-5 flex flex-wrap gap-2.5">
+                  @for (day of dayOptions; track day) {
+                    <button
+                      type="button"
+                      (click)="toggleDay(day)"
+                      [attr.aria-pressed]="hasDay(day)"
+                      class="rounded-2xl border px-5 py-3 text-sm font-bold transition-all"
+                      [class]="hasDay(day) ? 'border-brand-500 bg-brand-500 text-on-brand shadow-soft' : 'border-brand-200 text-stone-600 hover:border-brand-400'">
+                      {{ day }}
+                    </button>
+                  }
+                </div>
+                <p class="mt-3 text-xs text-stone-400">الجمعة إجازة المركز.</p>
+              </div>
+
+              <div>
+                <h2 class="text-xl font-black text-ink">الوقت المفضّل للدرس</h2>
+                <div class="mt-5 grid gap-2.5 sm:grid-cols-2">
+                  @for (t of timeOptions; track t.id) {
+                    <button
+                      type="button"
+                      (click)="timeSlot.set(t.id)"
+                      [attr.aria-pressed]="timeSlot() === t.id"
+                      class="flex items-center justify-between gap-3 rounded-2xl border p-4 text-start transition-all"
+                      [class]="timeSlot() === t.id ? 'border-brand-500 bg-brand-50' : 'border-brand-200 hover:border-brand-400 hover:bg-brand-50/40'">
+                      <span>
+                        <span class="block text-sm font-black text-ink">{{ t.label }}</span>
+                        <span class="num block text-xs text-stone-500">{{ t.note }}</span>
+                      </span>
+                      @if (timeSlot() === t.id) {
+                        <app-icon name="check-circle" [size]="20" class="text-brand-600" />
+                      }
+                    </button>
+                  }
+                </div>
+              </div>
+
+              <div>
+                <h2 class="text-xl font-black text-ink">وتيرة الدروس</h2>
+                <div class="mt-4 space-y-2.5">
+                  @for (p of paceOptions; track p) {
+                    <button
+                      type="button"
+                      (click)="pace.set(p)"
+                      [attr.aria-pressed]="pace() === p"
+                      class="flex w-full items-center gap-3.5 rounded-2xl border p-4 text-start text-sm font-bold transition-all"
+                      [class]="pace() === p ? 'border-brand-500 bg-brand-50 text-ink' : 'border-brand-200 text-stone-600 hover:border-brand-400'">
+                      <span
+                        class="grid h-5 w-5 shrink-0 place-items-center rounded-full border-2"
+                        [class]="pace() === p ? 'border-brand-500' : 'border-stone-300'">
+                        @if (pace() === p) {
+                          <span class="h-2.5 w-2.5 rounded-full bg-brand-500"></span>
+                        }
+                      </span>
+                      {{ p }}
+                    </button>
+                  }
+                </div>
+              </div>
+
+              <div>
+                <h2 class="text-xl font-black text-ink">متى تريد البدء؟</h2>
+                <div class="mt-4 flex flex-wrap gap-2.5">
+                  @for (s of startOptions; track s) {
+                    <button
+                      type="button"
+                      (click)="startWhen.set(s)"
+                      [attr.aria-pressed]="startWhen() === s"
+                      class="rounded-2xl border px-5 py-3 text-sm font-bold transition-all"
+                      [class]="startWhen() === s ? 'border-brand-500 bg-brand-500 text-on-brand' : 'border-brand-200 text-stone-600 hover:border-brand-400'">
+                      {{ s }}
+                    </button>
+                  }
+                </div>
+              </div>
+            </div>
+          }
+
+          <!-- Step 3 -->
+          @if (step() === 3) {
+            <div class="animate-fade-in space-y-6">
+              <h2 class="text-xl font-black text-ink">بياناتك للتواصل</h2>
+              <p class="-mt-4 text-sm text-stone-500">
+                نحتاج الاسم والرقم فقط. لا تُخزَّن بياناتك على الموقع — تُرسَل إلى واتساب المدرب مباشرة.
+              </p>
+
+              <div>
+                <label class="label" for="name">الاسم الكامل <span class="text-red-500">*</span></label>
+                <input
+                  id="name"
+                  type="text"
+                  class="input"
+                  placeholder="مثال: محمد أحمد العلي"
+                  [value]="fullName()"
+                  (input)="fullName.set(value($event))"
+                  autocomplete="name" />
+                @if (fullName().length > 0 && !nameValid()) {
+                  <p class="field-error">الرجاء كتابة الاسم كاملاً.</p>
+                }
+              </div>
+
+              <div>
+                <label class="label" for="phone">رقم الهاتف <span class="text-red-500">*</span></label>
+                <input
+                  id="phone"
+                  type="tel"
+                  inputmode="tel"
+                  dir="ltr"
+                  class="input num text-start"
+                  placeholder="07XXXXXXXX"
+                  [value]="phone()"
+                  (input)="phone.set(value($event))"
+                  autocomplete="tel" />
+                @if (phone().length > 0 && !phoneValid()) {
+                  <p class="field-error">أدخل رقم هاتف أردني صحيح، مثل 0791234567.</p>
+                }
+              </div>
+
+              <div>
+                <label class="label" for="area">منطقتك <span class="font-normal text-stone-400">(اختياري)</span></label>
+                <input
+                  id="area"
+                  type="text"
+                  class="input"
+                  placeholder="مثال: تلاع العلي، عمّان"
+                  [value]="area()"
+                  (input)="area.set(value($event))" />
+                <p class="mt-1.5 text-xs text-stone-400">يساعدنا في معرفة إن كان الاستلام من موقعك متاحاً.</p>
+              </div>
+
+              <div>
+                <label class="label" for="notes">ملاحظات للمدرب <span class="font-normal text-stone-400">(اختياري)</span></label>
+                <textarea
+                  id="notes"
+                  rows="3"
+                  class="input resize-none"
+                  placeholder="مثال: أخاف من الدوارات، أو أحتاج الرخصة قبل نهاية الشهر."
+                  [value]="notes()"
+                  (input)="notes.set(value($event))"></textarea>
+              </div>
+
+              <button type="button" (click)="submit()" [disabled]="!canSubmit()" class="btn-whatsapp h-16 w-full text-base">
+                <app-icon name="whatsapp" [size]="22" />
+                أرسل الطلب عبر واتساب
+              </button>
+
+              <p class="flex items-start gap-2 text-xs leading-relaxed text-stone-500">
+                <app-icon name="info" [size]="15" class="mt-0.5 shrink-0 text-brand-500" />
+                سيُفتح واتساب برسالة جاهزة تحتوي كل اختياراتك — راجعها ثم اضغط إرسال.
+                لا يوجد حجز نهائي حتى يؤكّد المدرب الموعد معك.
+              </p>
+            </div>
+          }
+
+          <!-- Step navigation -->
+          <div class="mt-9 flex items-center justify-between gap-3 border-t border-brand-100 pt-6">
+            <button type="button" (click)="prevStep()" [disabled]="step() === 1" class="btn-outline h-12">
+              <app-icon name="chevron-start" [size]="18" />
+              السابق
+            </button>
+
+            @if (step() < 3) {
+              <button type="button" (click)="nextStep()" [disabled]="!stepValid()" class="btn-primary h-12 px-7">
+                التالي
+                <app-icon name="arrow-start" [size]="18" />
+              </button>
+            } @else {
+              <a [href]="tel" class="btn-outline h-12">
+                <app-icon name="phone" [size]="18" />
+                أفضّل الاتصال
+              </a>
+            }
+          </div>
+
+          @if (step() === 2 && !stepValid()) {
+            <p class="mt-4 flex items-center gap-2 text-xs font-semibold text-brand-700">
+              <app-icon name="info" [size]="15" />
+              اختر يوماً واحداً على الأقل ووقتاً مفضّلاً للمتابعة.
+            </p>
+          }
+        </div>
+
+        <!-- ==================== Live summary ==================== -->
+        <aside class="lg:sticky lg:top-32 lg:self-start">
+          <div class="card p-6 md:p-7">
+            <h3 class="mb-5 flex items-center gap-2 text-base font-black text-ink">
+              <app-icon name="clipboard" [size]="19" class="text-brand-600" />
+              ملخّص طلبك
+            </h3>
+
+            <dl class="space-y-3 text-sm">
+              @for (row of summary(); track row.label) {
+                <div class="flex items-start justify-between gap-4 border-b border-brand-100 pb-3 last:border-0 last:pb-0">
+                  <dt class="shrink-0 text-stone-500">{{ row.label }}</dt>
+                  <dd class="text-end font-bold text-ink">{{ row.value }}</dd>
+                </div>
+              }
+            </dl>
+
+            <div class="mt-6 rounded-2xl bg-brand-50/70 p-4">
+              <p class="text-xs font-bold text-stone-500">التقدير المبدئي لهذه الفئة</p>
+              <p class="mt-1.5 flex items-baseline gap-1.5">
+                <span class="text-xs font-bold text-stone-500">يبدأ من</span>
+                <span class="num text-3xl font-black text-brand-600">{{ selectedCategory().priceFrom }}</span>
+                <span class="text-sm font-bold text-stone-500">د.أ</span>
+              </p>
+              <p class="mt-1.5 text-xs text-stone-500">
+                <span class="num">{{ selectedCategory().lessons }}</span> درساً ×
+                <span class="num">{{ selectedCategory().lessonMinutes }}</span> دقيقة ·
+                <a routerLink="/services" class="font-bold text-brand-700 underline">احسب بدقّة</a>
+              </p>
+            </div>
+          </div>
+
+          <div class="mt-5 rounded-3xl bg-asphalt-900 p-6 text-white">
+            <h3 class="text-base font-black">تريد إجابة فورية؟</h3>
+            <p class="mt-2 text-sm leading-relaxed text-white/60">
+              المكالمة أسرع من أي نموذج. المدرب يجيب بنفسه خلال أوقات العمل.
+            </p>
+            <a [href]="tel" class="btn-primary mt-5 w-full">
+              <app-icon name="phone" [size]="18" />
+              <span class="num">{{ site.phoneDisplay }}</span>
+            </a>
+            <p class="mt-4 flex items-center gap-2 text-xs text-white/50">
+              <app-icon name="clock" [size]="14" class="text-brand-400" />
+              {{ site.hours.days }} · <span class="num">{{ site.hours.open }} — {{ site.hours.close }}</span>
+            </p>
+          </div>
+        </aside>
+      </div>
+    } @else {
+      <!-- ==================== Confirmation ==================== -->
+      <div class="mx-auto max-w-2xl animate-fade-in text-center">
+        <span class="mx-auto mb-7 grid h-24 w-24 place-items-center rounded-full bg-emerald-500 text-white">
+          <app-icon name="check" [size]="46" [strokeWidth]="3" />
+        </span>
+
+        <h2 class="text-3xl font-black text-ink md:text-4xl">تم تجهيز طلبك</h2>
+        <p class="mx-auto mt-5 max-w-lg text-[17px] leading-relaxed text-stone-600">
+          فُتحت نافذة واتساب برسالة جاهزة. اضغط إرسال داخل واتساب ليصل الطلب للمدرب
+          {{ coach.shortName }}، وسيتواصل معك لتأكيد الموعد.
+        </p>
+
+        <div class="card mt-9 p-7 text-start">
+          <h3 class="mb-5 text-base font-black text-ink">ما أرسلته</h3>
+          <dl class="space-y-3 text-sm">
+            @for (row of summary(); track row.label) {
+              <div class="flex items-start justify-between gap-4 border-b border-brand-100 pb-3 last:border-0 last:pb-0">
+                <dt class="shrink-0 text-stone-500">{{ row.label }}</dt>
+                <dd class="text-end font-bold text-ink">{{ row.value }}</dd>
+              </div>
+            }
+            <div class="flex items-start justify-between gap-4 border-t border-brand-100 pt-3">
+              <dt class="shrink-0 text-stone-500">الاسم</dt>
+              <dd class="text-end font-bold text-ink">{{ fullName() }}</dd>
+            </div>
+            <div class="flex items-start justify-between gap-4">
+              <dt class="shrink-0 text-stone-500">الهاتف</dt>
+              <dd class="num text-end font-bold text-ink">{{ phone() }}</dd>
+            </div>
+          </dl>
+        </div>
+
+        <div class="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
+          <a [href]="waLink()" target="_blank" rel="noopener" class="btn-whatsapp h-14 px-7 text-base">
+            <app-icon name="whatsapp" [size]="20" />
+            لم تُفتح؟ افتح واتساب
+          </a>
+          <a [href]="tel" class="btn-primary h-14 px-7 text-base">
+            <app-icon name="phone" [size]="20" />
+            <span class="num">{{ site.phoneDisplay }}</span>
+          </a>
+        </div>
+
+        <div class="mt-12 rounded-[2rem] bg-brand-50/70 p-8">
+          <h3 class="text-xl font-black text-ink">بينما تنتظر الرد…</h3>
+          <p class="mx-auto mt-3 max-w-md text-sm leading-relaxed text-stone-600">
+            ابدأ بالفحص النظري التجريبي مجاناً. الطلاب الذين يصلون لأول درس وقد أتمّوا النظري ينتهون أسرع.
+          </p>
+          <div class="mt-6 flex flex-col items-center justify-center gap-3 sm:flex-row">
+            <a routerLink="/theory" class="btn-primary">
+              <app-icon name="clipboard" [size]="18" />
+              الفحص النظري التجريبي
+            </a>
+            <button type="button" (click)="reset()" class="btn-ghost">
+              <app-icon name="refresh" [size]="18" />
+              تعديل الطلب
+            </button>
+          </div>
+        </div>
+      </div>
+    }
+  </div>
+</section>

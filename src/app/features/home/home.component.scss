@@ -1,0 +1,30 @@
+:host {
+  display: block;
+}
+
+/* Warm light bled over the hero photo so the headline keeps contrast without
+   flattening the whole image behind a heavy black scrim. */
+.hero-glow {
+  background:
+    radial-gradient(42rem 24rem at 88% 8%, rgba(249, 115, 22, 0.3), transparent 68%),
+    radial-gradient(34rem 20rem at 4% 96%, rgba(249, 115, 22, 0.14), transparent 70%);
+  pointer-events: none;
+}
+
+:host-context([dir='rtl']) .hero-glow {
+  background:
+    radial-gradient(42rem 24rem at 12% 8%, rgba(249, 115, 22, 0.3), transparent 68%),
+    radial-gradient(34rem 20rem at 96% 96%, rgba(249, 115, 22, 0.14), transparent 70%);
+}
+
+.cta-glow {
+  background:
+    radial-gradient(30rem 18rem at 50% -20%, rgba(249, 115, 22, 0.22), transparent 70%),
+    repeating-linear-gradient(
+      90deg,
+      transparent 0 44px,
+      rgba(255, 255, 255, 0.03) 44px 88px,
+      transparent 88px 132px
+    );
+  pointer-events: none;
+}

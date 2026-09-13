@@ -1,0 +1,253 @@
+:host {
+  display: block;
+  overflow: clip;
+}
+
+.exam-hero {
+  background-position: center 58%;
+}
+
+.hero-road {
+  background:
+    linear-gradient(90deg, transparent 0 49.65%, rgba(255, 255, 255, 0.3) 49.65% 50.35%, transparent 50.35%),
+    repeating-linear-gradient(90deg, transparent 0 44px, rgba(249, 115, 22, 0.75) 44px 86px, transparent 86px 130px);
+  background-size: 100% 100%, 130px 3px;
+  background-position: center, center 50%;
+  background-repeat: no-repeat, repeat-x;
+  mask-image: linear-gradient(to bottom, transparent, #000);
+}
+
+.exam-group {
+  animation: group-arrive 0.65s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: calc(var(--group-index, 0) * 110ms);
+}
+
+.group-orbit {
+  position: relative;
+}
+
+.group-orbit::after {
+  position: absolute;
+  inset: -7px;
+  border: 1px solid rgba(249, 115, 22, 0.24);
+  border-radius: 1.25rem;
+  content: '';
+  animation: orbit-breathe 3s ease-in-out infinite;
+}
+
+.model-card {
+  isolation: isolate;
+  overflow: hidden;
+  position: relative;
+}
+
+.model-card::before {
+  position: absolute;
+  inset-block: 0;
+  inset-inline-start: 0;
+  width: 3px;
+  background: #f97316;
+  content: '';
+  transform: scaleY(0);
+  transition: transform 240ms ease;
+}
+
+.model-card:hover::before,
+.model-card:focus-visible::before {
+  transform: scaleY(1);
+}
+
+.comprehensive-card::after {
+  position: absolute;
+  inset-inline-end: -4rem;
+  bottom: -4.5rem;
+  width: 19rem;
+  height: 9rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 50%;
+  box-shadow:
+    0 0 0 22px rgba(255, 255, 255, 0.025),
+    0 0 0 44px rgba(255, 255, 255, 0.018);
+  content: '';
+  pointer-events: none;
+}
+
+.practice-lab {
+  background:
+    radial-gradient(circle at 8% 20%, rgba(249, 115, 22, 0.14), transparent 28rem),
+    #fff;
+}
+
+.exam-cockpit {
+  animation: cockpit-arrive 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.question-stage {
+  animation: question-arrive 0.42s cubic-bezier(0.22, 1, 0.36, 1) both;
+  box-shadow: 0 22px 60px -36px rgba(67, 20, 7, 0.42);
+}
+
+.answer-option {
+  animation: option-arrive 0.35s ease-out both;
+  animation-delay: calc(var(--option-index, 0) * 45ms + 80ms);
+  position: relative;
+}
+
+.answer-option::after {
+  position: absolute;
+  inset: -2px;
+  border: 2px solid transparent;
+  border-radius: inherit;
+  content: '';
+  pointer-events: none;
+}
+
+.answer-option[aria-checked='true']::after {
+  animation: answer-confirm 0.42s ease-out;
+}
+
+.result-card {
+  animation: result-arrive 0.65s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.score-ring {
+  background: conic-gradient(#f97316 calc(var(--score, 0) * 1%), #ffedd5 0);
+  box-shadow: 0 16px 35px -20px rgba(194, 65, 12, 0.6);
+  animation: ring-arrive 0.8s 0.2s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.score-ring-pass {
+  background: conic-gradient(#10b981 calc(var(--score, 0) * 1%), #d1fae5 0);
+}
+
+.confetti {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.confetti i {
+  --x: calc((var(--piece) * 8.1%) - 3%);
+  position: absolute;
+  top: -12px;
+  left: var(--x);
+  width: 7px;
+  height: 14px;
+  border-radius: 2px;
+  background: #f97316;
+  opacity: 0;
+  transform: rotate(calc(var(--piece) * 31deg));
+  animation: confetti-fall calc(1.8s + var(--piece) * 45ms) calc(var(--piece) * 55ms) ease-out both;
+}
+
+.confetti i:nth-child(3n) {
+  background: #10b981;
+}
+
+.confetti i:nth-child(3n + 1) {
+  background: #fbbf24;
+}
+
+.confetti i:nth-child(even) {
+  width: 11px;
+  height: 6px;
+  border-radius: 999px;
+}
+
+@keyframes group-arrive {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes orbit-breathe {
+  50% {
+    opacity: 0.45;
+    transform: scale(1.06);
+  }
+}
+
+@keyframes cockpit-arrive {
+  from {
+    opacity: 0;
+    transform: translateY(-12px);
+  }
+}
+
+@keyframes question-arrive {
+  from {
+    opacity: 0;
+    transform: translateX(22px) scale(0.99);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+}
+
+@keyframes option-arrive {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes answer-confirm {
+  35% {
+    border-color: rgba(249, 115, 22, 0.5);
+    transform: scale(1.015);
+  }
+}
+
+@keyframes result-arrive {
+  from {
+    opacity: 0;
+    transform: translateY(24px) scale(0.985);
+  }
+}
+
+@keyframes ring-arrive {
+  from {
+    opacity: 0;
+    transform: rotate(-70deg) scale(0.7);
+  }
+}
+
+@keyframes confetti-fall {
+  0% {
+    opacity: 0;
+    transform: translateY(-10px) rotate(0deg);
+  }
+  10% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(420px) translateX(calc((var(--piece) - 6) * 5px)) rotate(520deg);
+  }
+}
+
+@media (max-width: 639px) {
+  .exam-hero {
+    min-height: 470px;
+  }
+
+  .question-stage {
+    border-radius: 1.35rem;
+  }
+
+  .exam-dock .btn {
+    min-width: 0;
+    padding-inline: 1rem;
+  }
+}

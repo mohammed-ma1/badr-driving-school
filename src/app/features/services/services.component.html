@@ -1,0 +1,62 @@
+<app-page-hero
+  eyebrow="خدماتنا"
+  title="تدريب معتمد لفئات القيادة السبع"
+  subtitle="منهاج عملي ونظري يحاكي فحص دائرة الترخيص، من الدراجات والآليات الزراعية حتى الشاحنات والحافلات." />
+
+<section class="bg-white py-20">
+  <div class="container-page max-w-5xl">
+    <div class="text-center">
+      <span class="eyebrow">الفئات</span>
+      <h2 class="h-section mt-5">فئات القيادة التي يدرّبها المركز</h2>
+      <p class="p-section">
+        لكل فئة شروطها ووثائقها وعدد دروسها. اختر فئتك لتعرف ما يشمله التدريب وسعر البداية.
+      </p>
+    </div>
+
+    <div class="mt-12 grid gap-6 md:grid-cols-2">
+      @for (c of categories; track c.id) {
+        <article [id]="c.id" class="scroll-mt-6 border border-stone-200 bg-white p-7">
+          <div class="flex items-center gap-4">
+            <span class="grid h-12 w-12 place-items-center rounded-full bg-brand-50 text-brand-500">
+              <app-icon [name]="c.icon" [size]="23" />
+            </span>
+            <div>
+              <h3 class="text-xl font-bold text-brand-500">{{ c.label }}</h3>
+              <p class="mt-1 text-sm font-semibold text-stone-500">{{ c.subtitle }}</p>
+            </div>
+          </div>
+          <ul class="mt-6 list-disc space-y-2.5 pe-2 ps-5 text-sm leading-7 text-stone-600 marker:text-brand-500">
+            @for (item of c.includes; track item) {
+              <li>{{ item }}</li>
+            }
+            <li>أدنى سن للحصول عليها: <span class="num font-bold">{{ c.minAge }}</span> سنة</li>
+            <li>مدة صلاحية الرخصة: {{ c.minAge >= 21 ? '5 سنوات' : '10 سنوات' }}</li>
+          </ul>
+        </article>
+      }
+    </div>
+  </div>
+</section>
+
+<section class="bg-stone-50 py-20">
+  <div class="container-page max-w-5xl">
+    <p class="text-sm font-bold text-brand-500">الوثائق</p>
+    <h2 class="mt-3 text-3xl font-bold text-ink">الوثائق المطلوبة عند تقديم الفحص النظري في دائرة الترخيص</h2>
+    <ul class="mt-8 list-disc space-y-3 ps-6 text-base leading-8 text-stone-600 marker:text-brand-500">
+      <li>شهادة الكفاءة الصادرة من المركز.</li>
+      <li>هوية الأحوال المدنية.</li>
+      <li>صورتان شخصيتان بخلفية بيضاء.</li>
+      <li>دفتر خدمة العلم مؤجل للذكور.</li>
+      <li>رسوم الفحص النظري والفحص العملي والفحص الطبي للعيون حسب تعليمات دائرة الترخيص.</li>
+      <li>شهادة حسن سيرة وسلوك للفئات الأولى والرابعة والخامسة والسادسة.</li>
+    </ul>
+
+    <div class="mt-10 border-s-4 border-brand-500 bg-white p-6">
+      <h3 class="text-lg font-bold text-ink">للحجز والاستفسار</h3>
+      <p class="mt-2 text-sm text-stone-500">تواصل مباشرة مع المدرب {{ coach.name }}</p>
+      <a [href]="tel" class="num mt-4 inline-flex rounded bg-brand-500 px-8 py-3 font-bold text-white hover:bg-brand-600">
+        {{ site.phoneDisplay }}
+      </a>
+    </div>
+  </div>
+</section>
