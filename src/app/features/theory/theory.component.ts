@@ -12,6 +12,7 @@ import {
   shuffle,
 } from '../../core/data/questions';
 import { SIGNS, SIGN_SHAPES, SignShape } from '../../core/data/signs';
+import { FeedbackService } from '../../core/services/feedback.service';
 import { SeoService } from '../../core/services/seo.service';
 import { SITE, links } from '../../core/site';
 import { IconComponent } from '../../shared/ui/icon.component';
@@ -62,6 +63,7 @@ interface ExamGroup {
 })
 export class TheoryComponent implements OnDestroy {
   private seo = inject(SeoService);
+  readonly feedback = inject(FeedbackService);
 
   readonly site = SITE;
   readonly tel = links.tel;
@@ -272,6 +274,9 @@ export class TheoryComponent implements OnDestroy {
       next[this.index()] = optionIndex;
       return next;
     });
+    // Neutral on purpose. The exam withholds correctness until submission, so a
+    // right/wrong cue here would leak the answer key.
+    this.feedback.tick();
   }
 
   goTo(i: number): void {
@@ -293,6 +298,12 @@ export class TheoryComponent implements OnDestroy {
   finish(): void {
     this.stopTicker();
     this.stage.set('result');
+    // Safe to be expressive now: the score is on screen anyway.
+    if (this.passed()) {
+      this.feedback.pass();
+    } else {
+      this.feedback.fail();
+    }
     const pct = this.percent();
     if (this.best() === null || pct > (this.best() as number)) {
       this.best.set(pct);
@@ -361,6 +372,7 @@ export class TheoryComponent implements OnDestroy {
       next.has(id) ? next.delete(id) : next.add(id);
       return next;
     });
+    this.feedback.tick();
   }
 
   isFlipped(id: string): boolean {

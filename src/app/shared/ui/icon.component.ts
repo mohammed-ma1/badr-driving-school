@@ -165,6 +165,12 @@ import { Component, Input } from '@angular/core';
         @case ('trophy') {
           <path d="M8 4h8v6a4 4 0 0 1-8 0Z" /><path d="M8 5H5v2a3 3 0 0 0 3 3M16 5h3v2a3 3 0 0 1-3 3" /><path d="M12 14v4M9 21h6" />
         }
+        @case ('volume-on') {
+          <path d="M11 5 6 9H3v6h3l5 4Z" /><path d="M15.5 8.5a5 5 0 0 1 0 7" /><path d="M18.5 5.5a9 9 0 0 1 0 13" />
+        }
+        @case ('volume-off') {
+          <path d="M11 5 6 9H3v6h3l5 4Z" /><path d="m16 9 5 6M21 9l-5 6" />
+        }
         @case ('facebook') {
           <path d="M14 9V7a2 2 0 0 1 2-2h2V2h-3a5 5 0 0 0-5 5v2H8v3h2v10h4V12h3l.5-3Z" />
         }

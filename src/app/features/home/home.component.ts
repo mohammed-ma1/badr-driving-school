@@ -6,6 +6,7 @@ import { CURATED_QUESTIONS } from '../../core/data/curated-questions';
 // Imported from the leaf modules, not the `questions` aggregator: going through
 // the aggregator would pull the whole generated exam bank into the home bundle.
 import { Question, shuffle } from '../../core/data/question.model';
+import { FeedbackService } from '../../core/services/feedback.service';
 import { SeoService } from '../../core/services/seo.service';
 import { COACH, SITE, links } from '../../core/site';
 import { IconComponent } from '../../shared/ui/icon.component';
@@ -20,6 +21,7 @@ import { StarsComponent } from '../../shared/ui/stars.component';
 })
 export class HomeComponent {
   private seo = inject(SeoService);
+  private feedback = inject(FeedbackService);
 
   readonly site = SITE;
   readonly coach = COACH;
@@ -57,6 +59,13 @@ export class HomeComponent {
   answerSample(index: number): void {
     if (this.picked() !== null) return;
     this.picked.set(index);
+    // This card reveals the answer immediately, so a right/wrong cue gives
+    // nothing away — unlike the exam, which stays neutral until submission.
+    if (index === this.sample().answer) {
+      this.feedback.correct();
+    } else {
+      this.feedback.wrong();
+    }
   }
 
   nextSample(): void {
