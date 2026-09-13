@@ -370,8 +370,10 @@
                     <strong>{{ current().options[current().answer] }}</strong>
                   </p>
                 }
-                @if (index() < deck().length - 1 && revealing()) {
-                  <p class="mt-1 text-xs font-bold opacity-65">سيتم الانتقال للسؤال التالي…</p>
+                @if (index() < deck().length - 1) {
+                  <p class="mt-1.5 text-xs font-bold opacity-70">
+                    اضغط «التالي» للانتقال إلى السؤال التالي.
+                  </p>
                 }
               </div>
             </div>
@@ -381,7 +383,7 @@
 
         <!-- Navigation -->
         <div class="exam-dock sticky bottom-3 z-30 mt-6 flex items-center justify-between gap-3 rounded-2xl border border-stone-200/80 bg-white/90 p-2 shadow-lifted backdrop-blur-xl sm:static sm:border-0 sm:bg-transparent sm:p-0 sm:shadow-none">
-          <button type="button" (click)="prev()" [disabled]="index() === 0 || revealing()" class="btn-outline h-12">
+          <button type="button" (click)="prev()" [disabled]="index() === 0" class="btn-outline h-12">
             <app-icon name="chevron-start" [size]="18" />
             السابق
           </button>
@@ -390,7 +392,7 @@
             <button
               type="button"
               (click)="requestFinish()"
-              [disabled]="!currentAnswered() || revealing()"
+              [disabled]="!currentAnswered()"
               class="btn-primary h-12 px-7">
               <app-icon name="check" [size]="18" />
               سلّم الاختبار
@@ -399,10 +401,10 @@
             <button
               type="button"
               (click)="next()"
-              [disabled]="!currentAnswered() || revealing()"
+              [disabled]="!currentAnswered()"
               class="btn-dark h-12 px-7"
               [attr.title]="currentAnswered() ? null : 'أجب على السؤال أولاً للانتقال للتالي'">
-              {{ revealing() ? 'لحظة…' : 'التالي' }}
+              التالي
               <app-icon name="arrow-start" [size]="18" />
             </button>
           }
@@ -430,7 +432,7 @@
               <button
                 type="button"
                 (click)="goTo(i)"
-                [disabled]="revealing() || i > furthest()"
+                [disabled]="i > furthest()"
                 class="num grid h-10 w-10 place-items-center rounded-xl border text-sm font-bold transition-all disabled:cursor-not-allowed disabled:opacity-40"
                 [class]="
                   pillState(i) === 'current'
