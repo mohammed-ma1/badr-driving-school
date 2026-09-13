@@ -20,7 +20,11 @@
 <section class="bg-white pb-16 md:pb-24">
   <div class="container-page max-w-5xl">
     @if (!submitted()) {
-      <!-- Stepper -->
+      <!-- Stepper. The per-step labels do not fit beside three icons on a
+           phone, so the current step is named once above the row instead. -->
+      <p class="mb-4 text-sm font-black text-ink sm:hidden">
+        <span class="num text-stone-400">الخطوة {{ step() }} من 3 · </span>{{ steps[step() - 1].title }}
+      </p>
       <ol class="mb-10 flex items-center justify-between gap-2">
         @for (s of steps; track s.n) {
           <li class="flex flex-1 items-center gap-3">
