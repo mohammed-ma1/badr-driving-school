@@ -17,20 +17,13 @@ interface NavItem {
     <header class="absolute inset-x-0 top-0 z-[100] text-white">
       <div class="border-b border-white/15 bg-black/20">
         <div class="container-page flex h-10 items-center justify-between text-xs">
-          <!-- The icons stay 15px, but each link fills the bar's full height so
-               the tap target is finger-sized on a phone. -->
-          <div class="-mx-2 flex items-center">
-            <a [href]="social.facebook" target="_blank" rel="noopener" aria-label="فيسبوك" class="grid h-10 w-9 place-items-center transition-colors hover:text-brand-300"><app-icon name="facebook" [size]="15" /></a>
-            <a [href]="social.instagram" target="_blank" rel="noopener" aria-label="إنستغرام" class="grid h-10 w-9 place-items-center transition-colors hover:text-brand-300"><app-icon name="instagram" [size]="15" /></a>
-            <a [href]="social.tiktok" target="_blank" rel="noopener" aria-label="تيك توك" class="grid h-10 w-9 place-items-center transition-colors hover:text-brand-300"><app-icon name="tiktok" [size]="15" /></a>
-          </div>
+          <a [href]="tel" class="num -mx-2 flex h-10 items-center gap-1.5 px-2 font-bold transition-colors hover:text-brand-300">
+            <app-icon name="phone" [size]="14" />{{ phone }}
+          </a>
           <p class="hidden items-center gap-1.5 text-white/75 sm:flex">
             <app-icon name="map-pin" [size]="14" />
             {{ address }}
           </p>
-          <a [href]="tel" class="num -mx-2 flex h-10 items-center gap-1.5 px-2 font-bold transition-colors hover:text-brand-300">
-            <app-icon name="phone" [size]="14" />{{ phone }}
-          </a>
         </div>
       </div>
 
@@ -126,10 +119,8 @@ export class HeaderComponent {
   readonly siteName = SITE.name;
   readonly phone = SITE.phoneDisplay;
   readonly tel = links.tel;
-  readonly waLink = links.wa(`مرحباً ${SITE.name}، أرغب بالاستفسار عن دروس تعليم القيادة.`);
   readonly hours = SITE.hours;
   readonly address = SITE.location.address;
-  readonly social = SITE.social;
 
   readonly drawer = signal(false);
 
