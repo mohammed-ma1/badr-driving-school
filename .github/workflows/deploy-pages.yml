@@ -30,8 +30,14 @@ jobs:
       - name: Build Angular app
         run: npx ng build --configuration production --base-href "/${{ github.event.repository.name }}/"
 
-      - name: SPA fallback for GitHub Pages
-        run: cp dist/badr-driving-school/browser/index.html dist/badr-driving-school/browser/404.html
+      - name: Static routes and SPA fallback for GitHub Pages
+        run: |
+          output="dist/badr-driving-school/browser"
+          cp "$output/index.html" "$output/404.html"
+          for route in coach services theory booking contact; do
+            mkdir -p "$output/$route"
+            cp "$output/index.html" "$output/$route/index.html"
+          done
 
       - uses: actions/upload-pages-artifact@v3
         with:

@@ -18,7 +18,7 @@ export class SeoService {
   set(pageTitle: string, description: string): void {
     const full = `${pageTitle} | ${SITE.name}`;
     const route = this.router.url.split(/[?#]/)[0].replace(/^\/+/, '');
-    const canonical = new URL(route, SITE.url).href;
+    const canonical = new URL(route ? `${route}/` : '', SITE.url).href;
     const image = new URL('social-preview.jpg', SITE.url).href;
 
     this.title.setTitle(full);
