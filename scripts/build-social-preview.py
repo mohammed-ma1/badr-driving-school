@@ -54,7 +54,7 @@ draw.text((218, 78), ar("تدريب معتمد"), font=font(20, True), fill=WHIT
 
 draw.text(
     (520, 165),
-    ar("مركز بدر سامي الجبور"),
+    ar("المدرب بدر الجبور"),
     font=font(46, True),
     fill=WHITE,
     anchor="ra",

@@ -309,33 +309,79 @@
               <button
                 type="button"
                 (click)="answer(i)"
+                [disabled]="currentAnswered()"
                 role="radio"
                 [attr.aria-checked]="picked() === i"
                 [style.--option-index]="i"
-                class="answer-option flex w-full items-center gap-4 rounded-2xl border-2 p-4 text-start text-[15px] font-semibold transition-all md:p-5"
+                class="answer-option flex w-full items-center gap-4 rounded-2xl border-2 p-4 text-start text-[15px] font-semibold transition-all md:p-5 disabled:cursor-default"
                 [class]="
-                  picked() === i
-                    ? 'border-brand-500 bg-brand-50 text-ink shadow-soft'
-                    : 'border-brand-100 bg-white text-stone-700 hover:border-brand-300 hover:bg-brand-50/40'
+                  picked() === null
+                    ? 'border-brand-100 bg-white text-stone-700 hover:border-brand-300 hover:bg-brand-50/40'
+                    : i === current().answer
+                      ? 'answer-correct border-emerald-500 bg-emerald-50 text-emerald-950 shadow-soft'
+                      : picked() === i
+                        ? 'answer-wrong border-red-500 bg-red-50 text-red-950'
+                        : 'border-stone-100 bg-stone-50 text-stone-400 opacity-60'
                 ">
                 <span
                   class="grid h-9 w-9 shrink-0 place-items-center rounded-xl text-sm font-black transition-colors"
-                  [class]="picked() === i ? 'bg-brand-500 text-on-brand' : 'bg-brand-50 text-brand-700'">
+                  [class]="
+                    picked() === null
+                      ? 'bg-brand-50 text-brand-700'
+                      : i === current().answer
+                        ? 'bg-emerald-600 text-white'
+                        : picked() === i
+                          ? 'bg-red-600 text-white'
+                          : 'bg-stone-100 text-stone-400'
+                  ">
                   {{ optionLetter(i) }}
                 </span>
                 <span class="flex-1 leading-relaxed">{{ opt }}</span>
-                @if (picked() === i) {
-                  <app-icon name="check-circle" [size]="22" class="shrink-0 text-brand-600" />
+                @if (picked() !== null && i === current().answer) {
+                  <app-icon name="check-circle" [size]="22" class="shrink-0 text-emerald-600" />
+                } @else if (picked() === i) {
+                  <app-icon name="x-circle" [size]="22" class="shrink-0 text-red-600" />
                 }
               </button>
             }
           </div>
+
+          @if (currentAnswered()) {
+            <div
+              class="answer-feedback mt-5 flex items-start gap-3 rounded-2xl border p-4"
+              [class]="
+                currentCorrect()
+                  ? 'border-emerald-200 bg-emerald-50 text-emerald-900'
+                  : 'border-red-200 bg-red-50 text-red-900'
+              "
+              role="status"
+              aria-live="assertive">
+              <app-icon
+                [name]="currentCorrect() ? 'check-circle' : 'x-circle'"
+                [size]="22"
+                class="mt-0.5 shrink-0" />
+              <div class="min-w-0">
+                <p class="font-black">
+                  {{ currentCorrect() ? 'إجابة صحيحة — أحسنت!' : 'إجابة غير صحيحة' }}
+                </p>
+                @if (!currentCorrect()) {
+                  <p class="mt-1.5 text-sm leading-7">
+                    الإجابة الصحيحة:
+                    <strong>{{ current().options[current().answer] }}</strong>
+                  </p>
+                }
+                @if (index() < deck().length - 1 && revealing()) {
+                  <p class="mt-1 text-xs font-bold opacity-65">سيتم الانتقال للسؤال التالي…</p>
+                }
+              </div>
+            </div>
+          }
         </article>
         }
 
         <!-- Navigation -->
         <div class="exam-dock sticky bottom-3 z-30 mt-6 flex items-center justify-between gap-3 rounded-2xl border border-stone-200/80 bg-white/90 p-2 shadow-lifted backdrop-blur-xl sm:static sm:border-0 sm:bg-transparent sm:p-0 sm:shadow-none">
-          <button type="button" (click)="prev()" [disabled]="index() === 0" class="btn-outline h-12">
+          <button type="button" (click)="prev()" [disabled]="index() === 0 || revealing()" class="btn-outline h-12">
             <app-icon name="chevron-start" [size]="18" />
             السابق
           </button>
@@ -344,7 +390,7 @@
             <button
               type="button"
               (click)="requestFinish()"
-              [disabled]="!currentAnswered()"
+              [disabled]="!currentAnswered() || revealing()"
               class="btn-primary h-12 px-7">
               <app-icon name="check" [size]="18" />
               سلّم الاختبار
@@ -353,10 +399,10 @@
             <button
               type="button"
               (click)="next()"
-              [disabled]="!currentAnswered()"
+              [disabled]="!currentAnswered() || revealing()"
               class="btn-dark h-12 px-7"
               [attr.title]="currentAnswered() ? null : 'أجب على السؤال أولاً للانتقال للتالي'">
-              التالي
+              {{ revealing() ? 'لحظة…' : 'التالي' }}
               <app-icon name="arrow-start" [size]="18" />
             </button>
           }
@@ -384,7 +430,7 @@
               <button
                 type="button"
                 (click)="goTo(i)"
-                [disabled]="i > furthest()"
+                [disabled]="revealing() || i > furthest()"
                 class="num grid h-10 w-10 place-items-center rounded-xl border text-sm font-bold transition-all disabled:cursor-not-allowed disabled:opacity-40"
                 [class]="
                   pillState(i) === 'current'

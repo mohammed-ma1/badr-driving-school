@@ -154,6 +154,62 @@ textarea {
   background-size: 180px 180px;
 }
 
+/* Immediate answer feedback is global to keep the large theory component
+   within Angular's per-component style budget. */
+.answer-option.answer-correct {
+  animation: answer-correct 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.answer-option.answer-correct::after {
+  animation: correct-ring 0.65s ease-out;
+}
+
+.answer-option.answer-wrong {
+  animation: answer-wrong 0.48s ease-out both;
+}
+
+.answer-feedback {
+  animation: feedback-arrive 0.4s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes answer-correct {
+  35% {
+    transform: scale(1.018);
+    box-shadow: 0 0 0 5px rgb(16 185 129 / 12%);
+  }
+}
+
+@keyframes correct-ring {
+  from {
+    border-color: rgb(16 185 129 / 85%);
+    opacity: 1;
+    transform: scale(1);
+  }
+  to {
+    border-color: transparent;
+    opacity: 0;
+    transform: scale(1.035);
+  }
+}
+
+@keyframes answer-wrong {
+  20%,
+  60% {
+    transform: translateX(7px);
+  }
+  40%,
+  80% {
+    transform: translateX(-7px);
+  }
+}
+
+@keyframes feedback-arrive {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.985);
+  }
+}
+
 /* Respect users who prefer reduced motion */
 @media (prefers-reduced-motion: reduce) {
   html {

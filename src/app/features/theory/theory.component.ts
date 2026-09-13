@@ -149,12 +149,18 @@ export class TheoryComponent implements OnDestroy {
   readonly remaining = signal(0);
 
   private ticker: ReturnType<typeof setInterval> | null = null;
+  private advanceTimer: ReturnType<typeof setTimeout> | null = null;
   /** Set when a preset launched the exam, so "retry" replays the same one. */
   private lastPart: ExamPart | null = null;
 
   readonly current = computed(() => this.deck()[this.index()]);
   readonly picked = computed(() => this.answers()[this.index()] ?? null);
   readonly currentAnswered = computed(() => this.picked() !== null);
+  readonly currentCorrect = computed(
+    () => this.picked() !== null && this.picked() === this.current()?.answer,
+  );
+  /** Locks navigation while the colour, message and cue are being revealed. */
+  readonly revealing = signal(false);
   /** Students may only move as far as the first unanswered question. */
   readonly furthest = computed(() => {
     const firstBlank = this.answers().findIndex((a) => a === null);
@@ -247,6 +253,7 @@ export class TheoryComponent implements OnDestroy {
   }
 
   private launch(deck: Question[], title: string): void {
+    this.stopAdvance();
     this.examTitle.set(title);
     this.deck.set(deck);
     this.answers.set(new Array(deck.length).fill(null));
@@ -269,33 +276,57 @@ export class TheoryComponent implements OnDestroy {
   }
 
   answer(optionIndex: number): void {
+    if (this.currentAnswered() || this.revealing()) return;
+
+    const questionIndex = this.index();
+    const correct = optionIndex === this.current().answer;
     this.answers.update((current) => {
       const next = [...current];
-      next[this.index()] = optionIndex;
+      next[questionIndex] = optionIndex;
       return next;
     });
-    // Neutral on purpose. The exam withholds correctness until submission, so a
-    // right/wrong cue here would leak the answer key.
-    this.feedback.tick();
+
+    this.revealing.set(true);
+    if (correct) {
+      this.feedback.correct();
+    } else {
+      this.feedback.wrong();
+    }
+
+    // Keep the result visible long enough to register. A wrong answer stays
+    // longer because the student also needs time to read the correct option.
+    const delay = correct ? 1300 : 2300;
+    this.advanceTimer = setTimeout(() => {
+      this.advanceTimer = null;
+      this.revealing.set(false);
+      if (
+        this.stage() === 'running' &&
+        this.index() === questionIndex &&
+        questionIndex < this.deck().length - 1
+      ) {
+        this.index.set(questionIndex + 1);
+      }
+    }, delay);
   }
 
   goTo(i: number): void {
-    if (i < 0 || i > this.furthest()) return;
+    if (this.revealing() || i < 0 || i > this.furthest()) return;
     this.index.set(i);
   }
 
   next(): void {
-    if (!this.currentAnswered() || this.index() >= this.deck().length - 1) return;
+    if (this.revealing() || !this.currentAnswered() || this.index() >= this.deck().length - 1) return;
     this.index.update((i) => i + 1);
   }
 
   prev(): void {
-    if (this.index() > 0) {
+    if (!this.revealing() && this.index() > 0) {
       this.index.update((i) => i - 1);
     }
   }
 
   finish(): void {
+    this.stopAdvance();
     this.stopTicker();
     this.stage.set('result');
     // Safe to be expressive now: the score is on screen anyway.
@@ -324,6 +355,7 @@ export class TheoryComponent implements OnDestroy {
   }
 
   restart(): void {
+    this.stopAdvance();
     this.stopTicker();
     this.stage.set('setup');
     this.deck.set([]);
@@ -411,7 +443,16 @@ export class TheoryComponent implements OnDestroy {
     }
   }
 
+  private stopAdvance(): void {
+    if (this.advanceTimer) {
+      clearTimeout(this.advanceTimer);
+      this.advanceTimer = null;
+    }
+    this.revealing.set(false);
+  }
+
   ngOnDestroy(): void {
+    this.stopAdvance();
     this.stopTicker();
   }
 
