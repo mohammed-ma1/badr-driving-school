@@ -5,15 +5,15 @@
     subtitle="جميع الأسئلة المتوقعة للاختبار النظري لقيادة السيارات في دائرة ترخيص المركبات الأردنية.">
     <div class="mt-9 grid max-w-xl grid-cols-3 gap-px overflow-hidden rounded-2xl border border-white/10 bg-white/10 backdrop-blur-md">
       <div class="bg-asphalt-900/60 px-4 py-4 text-center">
-        <strong class="num block text-2xl font-black text-brand-400">{{ bank.length }}</strong>
+        <strong class="num block text-[clamp(19px,5.5vw,24px)] font-black text-brand-400">{{ bank.length }}</strong>
         <span class="text-[11px] font-bold text-white/55">سؤال تدريبي</span>
       </div>
       <div class="bg-asphalt-900/60 px-4 py-4 text-center">
-        <strong class="num block text-2xl font-black text-brand-400">{{ modelCount }}</strong>
+        <strong class="num block text-[clamp(19px,5.5vw,24px)] font-black text-brand-400">{{ modelCount }}</strong>
         <span class="text-[11px] font-bold text-white/55">نموذج حقيقي</span>
       </div>
       <div class="bg-asphalt-900/60 px-4 py-4 text-center">
-        <strong class="num block text-2xl font-black text-brand-400">51/60</strong>
+        <strong class="num block text-[clamp(19px,5.5vw,24px)] font-black text-brand-400">51/60</strong>
         <span class="text-[11px] font-bold text-white/55">علامة النجاح</span>
       </div>
     </div>
@@ -31,12 +31,12 @@
 @if (stage() !== 'running') {
 <div class="sticky top-0 z-30 border-b border-stone-200/80 bg-white/90 shadow-sm backdrop-blur-xl">
   <div class="container-page flex items-center justify-between gap-4 py-4">
-    <div class="inline-flex rounded-2xl border border-stone-200 bg-stone-50 p-1">
+    <div class="flex min-w-0 flex-1 rounded-2xl border border-stone-200 bg-stone-50 p-1 sm:inline-flex sm:flex-none">
       <button
         type="button"
         (click)="mode.set('exam')"
         [attr.aria-pressed]="mode() === 'exam'"
-        class="flex items-center gap-2 rounded-xl px-5 py-2.5 text-sm font-bold transition-all"
+        class="flex flex-1 items-center justify-center gap-2 whitespace-nowrap rounded-xl px-4 py-2.5 text-[clamp(13px,3.6vw,14px)] font-bold transition-all sm:flex-none sm:px-5"
         [class]="mode() === 'exam' ? 'bg-asphalt-900 text-white shadow-md' : 'text-stone-500 hover:text-brand-600'">
         <app-icon name="clipboard" [size]="17" />
         الاختبار
@@ -45,7 +45,7 @@
         type="button"
         (click)="mode.set('signs')"
         [attr.aria-pressed]="mode() === 'signs'"
-        class="flex items-center gap-2 rounded-xl px-5 py-2.5 text-sm font-bold transition-all"
+        class="flex flex-1 items-center justify-center gap-2 whitespace-nowrap rounded-xl px-4 py-2.5 text-[clamp(13px,3.6vw,14px)] font-bold transition-all sm:flex-none sm:px-5"
         [class]="mode() === 'signs' ? 'bg-asphalt-900 text-white shadow-md' : 'text-stone-500 hover:text-brand-600'">
         <app-icon name="sign" [size]="17" />
         بطاقات الإشارات
@@ -100,7 +100,7 @@
                 </span>
                 <div>
                   <p class="text-xs font-bold text-brand-600">الفحص النظري</p>
-                  <h3 class="mt-1 text-2xl font-black text-ink">{{ group.title }}</h3>
+                  <h3 class="mt-1 text-fluid-card-title font-black text-ink">{{ group.title }}</h3>
                   <p class="mt-3 max-w-3xl text-[15px] leading-relaxed text-stone-600">{{ group.description }}</p>
                 </div>
               </div>
@@ -129,7 +129,7 @@
                 <div class="comprehensive-card relative mt-7 overflow-hidden rounded-3xl bg-asphalt-900 p-6 text-white md:flex md:items-center md:justify-between md:gap-8 md:p-8">
                   <div>
                     <span class="chip bg-brand-500/15 text-brand-400">الاختبار الشامل</span>
-                    <h4 class="mt-3 text-xl font-black">{{ group.comprehensive.label }}</h4>
+                    <h4 class="mt-3 text-fluid-card-title font-black">{{ group.comprehensive.label }}</h4>
                     <p class="mt-2 max-w-2xl text-sm leading-relaxed text-white/60">
                       اختبار مشابه لامتحان دائرة الترخيص، يحتوي على
                       <span class="num font-black text-white">60</span> سؤالاً يجب إكمالها خلال
@@ -140,7 +140,7 @@
                   <button
                     type="button"
                     (click)="startPreset(group.comprehensive)"
-                    class="btn-primary mt-6 h-14 w-full shrink-0 px-7 text-base md:mt-0 md:w-auto">
+                    class="btn-primary mt-6 min-h-[56px] w-full shrink-0 px-7 text-fluid-cta md:mt-0 md:w-auto">
                     <app-icon name="play" [size]="19" />
                     ابدأ الاختبار الشامل
                   </button>
@@ -155,7 +155,7 @@
           <div class="grid gap-8 p-6 md:grid-cols-[1fr_auto] md:items-end md:p-9">
             <div>
               <span class="eyebrow"><app-icon name="bolt" [size]="14" /> تدريب ذكي</span>
-              <h3 class="mt-4 text-2xl font-black text-ink">أنشئ اختبارك السريع</h3>
+              <h3 class="mt-4 text-fluid-card-title font-black text-ink">أنشئ اختبارك السريع</h3>
               <p class="mt-2 max-w-2xl text-sm leading-7 text-stone-500">
                 ركّز على نقطة ضعف محددة أو امزج كل المواضيع. سنختار لك أسئلة مختلفة في كل محاولة.
               </p>
@@ -193,7 +193,7 @@
               </div>
             </div>
 
-            <button type="button" (click)="start()" class="btn-primary h-16 min-w-52 px-8 text-base">
+            <button type="button" (click)="start()" class="btn-primary min-h-[64px] min-w-52 px-8 text-fluid-cta">
               <app-icon name="play" [size]="20" />
               ابدأ {{ effectiveCount() }} سؤالاً
             </button>
@@ -308,7 +308,7 @@
             }
           </span>
 
-          <h2 class="text-xl font-black leading-relaxed text-ink md:text-[1.6rem]">{{ current().text }}</h2>
+          <h2 class="text-fluid-question font-black leading-relaxed text-ink">{{ current().text }}</h2>
 
           @if (current().image) {
             <figure class="mt-6 flex justify-center rounded-2xl bg-stone-50 p-4">
@@ -514,7 +514,7 @@
             <app-icon [name]="passed() ? 'trophy' : 'refresh'" [size]="38" />
           </span>
 
-          <h2 class="text-3xl font-black text-ink md:text-4xl">
+          <h2 class="h-section">
             {{ passed() ? 'ناجح — أحسنت!' : 'لم تصل لعلامة النجاح بعد' }}
           </h2>
           <p class="mx-auto mt-4 max-w-lg text-[17px] leading-relaxed text-stone-600">
@@ -532,29 +532,29 @@
               [class.score-ring-pass]="passed()">
               <div class="grid h-[112px] w-[112px] place-items-center rounded-full bg-white shadow-inner">
                 <div>
-                  <p class="num text-4xl font-black" [class]="passed() ? 'text-emerald-600' : 'text-brand-600'">{{ percent() }}%</p>
+                  <p class="num text-[clamp(26px,7vw,36px)] font-black" [class]="passed() ? 'text-emerald-600' : 'text-brand-600'">{{ percent() }}%</p>
                   <p class="mt-1 text-[11px] font-bold text-stone-500">النتيجة</p>
                 </div>
               </div>
             </div>
             <div class="rounded-2xl bg-white px-7 py-5 shadow-sm">
-              <p class="num text-5xl font-black text-ink">{{ score() }}<span class="text-2xl text-stone-400">/{{ deck().length }}</span></p>
+              <p class="num text-[clamp(30px,9vw,48px)] font-black text-ink">{{ score() }}<span class="text-[clamp(17px,4.5vw,24px)] text-stone-400">/{{ deck().length }}</span></p>
               <p class="mt-1 text-xs font-bold text-stone-500">إجابات صحيحة</p>
             </div>
             @if (best() !== null) {
               <div class="rounded-2xl bg-white px-7 py-5 shadow-sm">
-                <p class="num text-5xl font-black text-brand-600">{{ best() }}%</p>
+                <p class="num text-[clamp(30px,9vw,48px)] font-black text-brand-600">{{ best() }}%</p>
                 <p class="mt-1 text-xs font-bold text-stone-500">أفضل نتيجة لك</p>
               </div>
             }
           </div>
 
           <div class="mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row">
-            <button type="button" (click)="retrySame()" class="btn-primary h-14 px-7 text-base">
+            <button type="button" (click)="retrySame()" class="btn-primary min-h-[56px] px-7 text-fluid-cta">
               <app-icon name="refresh" [size]="19" />
               أعد الاختبار
             </button>
-            <button type="button" (click)="restart()" class="btn-outline h-14 px-7 text-base">
+            <button type="button" (click)="restart()" class="btn-outline min-h-[56px] px-7 text-fluid-cta">
               <app-icon name="grid" [size]="19" />
               غيّر الإعدادات
             </button>
@@ -664,11 +664,11 @@
             الجزء الذي يُرسِب أكثر الطلاب هو العملي. احجز درسك الأول مع المدرب وابدأ من الساحة المغلقة.
           </p>
           <div class="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
-            <a routerLink="/booking" class="btn-primary h-14 px-7 text-base">
+            <a routerLink="/booking" class="btn-primary min-h-[56px] px-7 text-fluid-cta">
               <app-icon name="calendar" [size]="19" />
               احجز درسك الأول
             </a>
-            <a [href]="tel" class="btn-outline h-14 border-white/20 bg-white/5 px-7 text-base text-white hover:bg-white/10">
+            <a [href]="tel" class="btn-outline min-h-[56px] border-white/20 bg-white/5 px-7 text-fluid-cta text-white hover:bg-white/10">
               <app-icon name="phone" [size]="19" />
               <span class="num">{{ site.phoneDisplay }}</span>
             </a>
@@ -775,7 +775,7 @@
         <p class="mx-auto mt-4 max-w-lg font-semibold text-on-brand/75">
           جرّب اختباراً كامل الأسئلة عن الإشارات المرورية وحدها.
         </p>
-        <button type="button" (click)="startSignsExam()" class="btn-dark mt-7 h-14 px-8 text-base">
+        <button type="button" (click)="startSignsExam()" class="btn-dark mt-7 min-h-[56px] px-8 text-fluid-cta">
           <app-icon name="play" [size]="19" />
           اختبار الإشارات المرورية
         </button>

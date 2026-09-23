@@ -28,6 +28,8 @@ const PASS_PERCENT = 85;
 const SECONDS_PER_QUESTION = 60;
 /** Length of a licensing-department exam, and so of our comprehensive one. */
 const COMPREHENSIVE_COUNT = 60;
+/** Height of the header spacer plus the sticky status bar during an exam. */
+const STICKY_EXAM_CHROME = 96;
 const BEST_KEY = 'badr.theory.best';
 
 type ExamGroupId = ExamModel['group'];
@@ -269,7 +271,7 @@ export class TheoryComponent implements OnDestroy {
         }
       }, 1000);
     }
-    this.scrollToQuestion();
+    this.scrollToQuestion(false);
   }
 
   answer(optionIndex: number): void {
@@ -293,19 +295,19 @@ export class TheoryComponent implements OnDestroy {
   goTo(i: number): void {
     if (i < 0 || i > this.furthest()) return;
     this.index.set(i);
-    this.scrollToQuestion();
+    this.scrollToQuestion(true);
   }
 
   next(): void {
     if (!this.currentAnswered() || this.index() >= this.deck().length - 1) return;
     this.index.update((i) => i + 1);
-    this.scrollToQuestion();
+    this.scrollToQuestion(true);
   }
 
   prev(): void {
     if (this.index() > 0) {
       this.index.update((i) => i - 1);
-      this.scrollToQuestion();
+      this.scrollToQuestion(true);
     }
   }
 
@@ -421,17 +423,31 @@ export class TheoryComponent implements OnDestroy {
   // ---- Lifecycle -----------------------------------------------------------
 
   /**
-   * Stage changes render asynchronously. Waiting for two frames ensures the
-   * first question exists before positioning it below the sticky exam status.
+   * Brings the question itself into view on phones, where the header spacer
+   * and sticky status bar would otherwise fill the screen.
+   *
+   * Waiting two frames lets the new stage render first. Launching an exam
+   * scrolls instantly on purpose: it replaces the whole setup screen, and a
+   * smooth scroll would still be animating toward a position that no longer
+   * exists once the document shrinks.
    */
-  private scrollToQuestion(): void {
+  private scrollToQuestion(animate: boolean): void {
     if (typeof window === 'undefined' || !window.matchMedia('(max-width: 639px)').matches) return;
+
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     window.requestAnimationFrame(() => {
       window.requestAnimationFrame(() => {
-        document.getElementById('exam-question')?.scrollIntoView({
-          behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth',
-          block: 'start',
+        const question = document.getElementById('exam-question');
+        if (!question) return;
+
+        const target = question.getBoundingClientRect().top + window.scrollY - STICKY_EXAM_CHROME;
+        // 'instant' rather than 'auto': the latter defers to the page's
+        // `scroll-behavior: smooth`, which animates and loses its target when
+        // the surrounding stage is swapped out underneath it.
+        window.scrollTo({
+          top: Math.max(0, target),
+          behavior: animate && !reduceMotion ? 'smooth' : 'instant',
         });
       });
     });
@@ -474,7 +490,9 @@ function poolFor(group: ExamGroupId): Question[] {
 
 function scrollToTop(): void {
   if (typeof window !== 'undefined') {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    // Instant for the same reason as the question scroll: these calls
+    // accompany a stage swap, and a smooth scroll would race the re-render.
+    window.scrollTo({ top: 0, behavior: 'instant' });
   }
 }
 

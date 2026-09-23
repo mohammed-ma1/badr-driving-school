@@ -10,36 +10,36 @@
   <div class="absolute inset-0 bg-gradient-to-b from-asphalt-900/80 via-asphalt-900/70 to-asphalt-900"></div>
   <div class="hero-glow absolute inset-0" aria-hidden="true"></div>
 
-  <div class="container-page relative flex min-h-[640px] items-center pb-16 pt-36">
+  <div class="container-page relative flex min-h-[560px] items-center pb-14 pt-28 sm:min-h-[640px] sm:pb-16 sm:pt-36">
     <div class="max-w-3xl">
-      <span class="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-4 py-1.5 text-xs font-bold text-white/85 backdrop-blur">
-        <span class="h-2 w-2 rounded-full bg-emerald-400 shadow-[0_0_12px_#34d399]"></span>
+      <span class="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-4 py-1.5 text-fluid-eyebrow font-bold text-white/85 backdrop-blur">
+        <span class="h-2 w-2 shrink-0 rounded-full bg-emerald-400 shadow-[0_0_12px_#34d399]"></span>
         نستقبل طلاباً جدداً — أقرب موعد خلال ٢٤ ساعة
       </span>
 
-      <h1 class="mt-6 text-[clamp(2.15rem,8vw,3.75rem)] font-black leading-[1.15] tracking-tight">
+      <h1 class="mt-6 text-fluid-hero font-black leading-[1.15] tracking-tight">
         ابدأ بالفحص النظري،
         <span class="text-brand-400">وتعلّم مع مدرب تثق به</span>
       </h1>
 
-      <div class="mt-9 flex flex-col gap-3 sm:flex-row">
-        <a routerLink="/theory" class="btn-primary h-14 px-8 text-base">
+      <div class="mt-8 flex flex-col gap-3 sm:flex-row">
+        <a routerLink="/theory" class="btn-primary min-h-[56px] px-8 text-fluid-cta">
           <app-icon name="play" [size]="19" />
           ابدأ الفحص الآن
         </a>
-        <a routerLink="/coach" class="btn-outline h-14 border-white/20 bg-white/5 px-8 text-base text-white hover:bg-white/10">
+        <a routerLink="/coach" class="btn-outline min-h-[56px] border-white/20 bg-white/5 px-8 text-fluid-cta text-white hover:bg-white/10">
           <app-icon name="user" [size]="19" />
           تعرّف على المدرب
         </a>
       </div>
 
       <a [href]="tel" class="mt-7 inline-flex items-center gap-3 text-white/70 transition-colors hover:text-white">
-        <span class="grid h-11 w-11 place-items-center rounded-full border border-white/15 bg-white/10">
+        <span class="grid h-11 w-11 shrink-0 place-items-center rounded-full border border-white/15 bg-white/10">
           <app-icon name="phone" [size]="18" />
         </span>
         <span>
           <span class="block text-[11px] font-bold text-white/50">للحجز والاستفسار</span>
-          <span class="num block text-lg font-black tracking-tight">{{ site.phoneDisplay }}</span>
+          <span class="num block text-fluid-phone font-black tracking-tight">{{ site.phoneDisplay }}</span>
         </span>
       </a>
     </div>
@@ -71,7 +71,7 @@
       </p>
 
       <div class="mt-8 flex flex-col gap-3 sm:flex-row">
-        <a routerLink="/theory" class="btn-primary h-14 px-7 text-base">
+        <a routerLink="/theory" class="btn-primary min-h-[56px] px-7 text-fluid-cta">
           <app-icon name="play" [size]="19" />
           ابدأ الفحص النظري
         </a>
@@ -193,8 +193,8 @@
       <p class="mt-2 text-sm leading-7 text-white/60">ابدأ بالفحص مجاناً، أو تواصل مباشرة مع المدرب لحجز درس.</p>
     </div>
     <div class="flex w-full flex-col gap-3 sm:w-auto sm:flex-row">
-      <a routerLink="/theory" class="btn-primary h-14 px-7"><app-icon name="play" [size]="18" />ابدأ الفحص</a>
-      <a [href]="waLink" target="_blank" rel="noopener" class="btn-whatsapp h-14 px-7"><app-icon name="whatsapp" [size]="18" />راسل المدرب</a>
+      <a routerLink="/theory" class="btn-primary min-h-[56px] px-7"><app-icon name="play" [size]="18" />ابدأ الفحص</a>
+      <a [href]="waLink" target="_blank" rel="noopener" class="btn-whatsapp min-h-[56px] px-7"><app-icon name="whatsapp" [size]="18" />راسل المدرب</a>
     </div>
   </div>
 </section>

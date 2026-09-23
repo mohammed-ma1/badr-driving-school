@@ -287,7 +287,7 @@
                   (input)="notes.set(value($event))"></textarea>
               </div>
 
-              <button type="button" (click)="submit()" [disabled]="!canSubmit()" class="btn-whatsapp h-16 w-full text-base">
+              <button type="button" (click)="submit()" [disabled]="!canSubmit()" class="btn-whatsapp min-h-[64px] w-full text-fluid-cta">
                 <app-icon name="whatsapp" [size]="22" />
                 أرسل الطلب عبر واتساب
               </button>
@@ -410,11 +410,11 @@
         </div>
 
         <div class="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
-          <a [href]="waLink()" target="_blank" rel="noopener" class="btn-whatsapp h-14 px-7 text-base">
+          <a [href]="waLink()" target="_blank" rel="noopener" class="btn-whatsapp min-h-[56px] px-7 text-fluid-cta">
             <app-icon name="whatsapp" [size]="20" />
             لم تُفتح؟ افتح واتساب
           </a>
-          <a [href]="tel" class="btn-primary h-14 px-7 text-base">
+          <a [href]="tel" class="btn-primary min-h-[56px] px-7 text-fluid-cta">
             <app-icon name="phone" [size]="20" />
             <span class="num">{{ site.phoneDisplay }}</span>
           </a>

@@ -28,10 +28,10 @@ import { Component, Input } from '@angular/core';
             </span>
           }
 
-          <h1 class="text-3xl font-black leading-tight tracking-tight md:text-5xl">{{ title }}</h1>
+          <h1 class="text-[clamp(28px,7vw,48px)] font-black leading-tight tracking-tight">{{ title }}</h1>
 
           @if (subtitle) {
-            <p class="mt-5 max-w-2xl text-[15px] leading-8 text-white/65 md:text-base">{{ subtitle }}</p>
+            <p class="mt-5 max-w-2xl text-[clamp(15px,4vw,16px)] leading-8 text-white/65">{{ subtitle }}</p>
           }
 
           <ng-content />
