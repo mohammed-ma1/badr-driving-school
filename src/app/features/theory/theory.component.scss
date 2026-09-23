@@ -239,4 +239,11 @@
     min-width: 0;
     padding-inline: 1rem;
   }
+
+  .question-pill-grid {
+    max-height: 9.5rem;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scrollbar-width: thin;
+  }
 }

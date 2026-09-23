@@ -9,10 +9,10 @@ import { COACH, SITE, links } from '../core/site';
     <footer class="mt-auto bg-[#202020] text-white/70">
       <div class="container-page grid gap-12 py-14 md:grid-cols-2">
         <div>
-          <h3 class="mb-5 text-xl font-bold text-white">عن المركز</h3>
+          <h3 class="mb-5 text-xl font-bold text-white">عن المدرب</h3>
           <p class="max-w-md text-sm leading-8">
-            المركز الأول والوحيد في المملكة الأردنية الهاشمية الذي يدرب جميع فئات القيادة،
-            بإشراف المدرب المعتمد {{ coachName }}.
+            {{ coachName }} مدرب قيادة معتمد يقدّم تدريباً عملياً هادئاً لجميع الفئات،
+            من أول درس حتى الاستعداد للاختبار.
           </p>
         </div>
 

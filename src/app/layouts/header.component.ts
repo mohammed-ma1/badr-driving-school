@@ -52,9 +52,9 @@ interface NavItem {
           }
         </nav>
 
-        <a routerLink="/booking" class="hidden items-center gap-2 rounded-xl bg-brand-500 px-6 py-3 text-sm font-bold text-white shadow-soft transition-all hover:-translate-y-0.5 hover:bg-brand-600 lg:inline-flex">
-          <app-icon name="calendar" [size]="17" />
-          احجز موعداً
+        <a routerLink="/theory" class="hidden items-center gap-2 rounded-xl bg-brand-500 px-6 py-3 text-sm font-bold text-on-brand shadow-soft transition-all hover:-translate-y-0.5 hover:bg-brand-400 lg:inline-flex">
+          <app-icon name="play" [size]="17" />
+          ابدأ الفحص
         </a>
 
         <button
@@ -96,8 +96,11 @@ interface NavItem {
         }
 
         <div class="mt-5 space-y-2.5 border-t border-brand-100 pt-5">
-          <a routerLink="/booking" (click)="drawer.set(false)" class="btn-primary w-full">
-            <app-icon name="calendar" [size]="18" />احجز موعداً
+          <a routerLink="/theory" (click)="drawer.set(false)" class="btn-primary w-full">
+            <app-icon name="play" [size]="18" />ابدأ الفحص الآن
+          </a>
+          <a routerLink="/booking" (click)="drawer.set(false)" class="btn-outline w-full">
+            <app-icon name="calendar" [size]="18" />احجز مع المدرب
           </a>
         </div>
 
@@ -113,9 +116,9 @@ interface NavItem {
 export class HeaderComponent {
   readonly nav: NavItem[] = [
     { path: '/', label: 'الصفحة الرئيسية', icon: 'grid' },
-    { path: '/coach', label: 'عن المركز', icon: 'user' },
-    { path: '/services', label: 'خدماتنا', icon: 'car' },
     { path: '/theory', label: 'الفحص النظري', icon: 'clipboard' },
+    { path: '/coach', label: 'عن المدرب', icon: 'user' },
+    { path: '/services', label: 'فئات التدريب', icon: 'car' },
     { path: '/contact', label: 'اتصل بنا', icon: 'phone' },
   ];
 

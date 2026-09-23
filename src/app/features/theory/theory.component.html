@@ -65,18 +65,35 @@
   @if (stage() === 'setup') {
     <section class="road-bg py-14 md:py-20">
       <div class="container-page max-w-5xl">
-        <div class="mb-12 text-center">
-          <span class="eyebrow">الفحص</span>
-          <h2 class="h-section mt-5">اختر فئة الاختبار</h2>
+        <div class="mb-8 text-center md:mb-10">
+          <span class="eyebrow">ابدأ مباشرة</span>
+          <h2 class="h-section mt-5">اختر فئة رخصتك</h2>
           <p class="p-section">
-            نماذج تدريبية أصلية تغطي موضوعات الاختبار النظري لقيادة السيارات في دائرة ترخيص
-            السواقين والمركبات الأردنية. ابدأ بالأجزاء، ثم انتقل إلى الاختبار الشامل.
+            انتقل إلى فئتك واختر نموذجاً. لا تسجيل ولا خطوات إضافية.
           </p>
         </div>
 
+        <nav class="mb-10 grid gap-3 sm:grid-cols-3" aria-label="الانتقال إلى فئات الاختبار">
+          @for (group of examGroups; track group.id) {
+            <a
+              [href]="'#' + group.id"
+              class="group flex min-h-20 items-center gap-3 rounded-2xl border border-brand-200 bg-white p-4 text-start shadow-card transition-all hover:-translate-y-0.5 hover:border-brand-400 hover:shadow-soft">
+              <span class="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-asphalt-900 text-brand-400">
+                <app-icon [name]="group.icon" [size]="21" />
+              </span>
+              <span class="min-w-0">
+                <span class="block text-sm font-black text-ink">{{ group.title }}</span>
+                <span class="mt-1 flex items-center gap-1 text-xs font-bold text-brand-700">
+                  عرض النماذج <app-icon name="arrow-start" [size]="13" />
+                </span>
+              </span>
+            </a>
+          }
+        </nav>
+
         <div class="space-y-10">
           @for (group of examGroups; track group.id; let groupIndex = $index) {
-            <article class="exam-group overflow-hidden rounded-[2rem] border border-brand-100 bg-white shadow-card" [style.--group-index]="groupIndex">
+            <article [id]="group.id" class="exam-group scroll-mt-28 overflow-hidden rounded-[2rem] border border-brand-100 bg-white shadow-card" [style.--group-index]="groupIndex">
               <div class="relative grid items-center gap-5 overflow-hidden bg-gradient-to-l from-brand-50 to-white p-6 md:grid-cols-[auto_1fr] md:p-8">
                 <span class="group-orbit grid h-16 w-16 place-items-center rounded-2xl bg-asphalt-900 text-brand-400 shadow-lg">
                   <app-icon [name]="group.icon" [size]="31" />
@@ -280,7 +297,7 @@
 
         <!-- Question -->
         @for (question of [current()]; track question.id) {
-        <article class="question-stage card p-6 md:p-9">
+        <article id="exam-question" class="question-stage card scroll-mt-28 p-5 md:p-9">
           <span class="chip mb-5 bg-brand-50 text-brand-700">
             <app-icon name="sign" [size]="13" />
             @switch (current().topic) {
@@ -417,7 +434,7 @@
         }
 
         <!-- Question navigator -->
-        <div class="mt-10 card p-6">
+        <div class="question-map mt-10 card p-5 md:p-6">
           <div class="mb-4 flex flex-wrap items-center justify-between gap-3">
             <h3 class="text-sm font-black text-ink">خريطة الأسئلة</h3>
             <div class="flex flex-wrap items-center gap-4 text-[11px] font-bold text-stone-500">
@@ -427,7 +444,7 @@
             </div>
           </div>
 
-          <div class="flex flex-wrap gap-2">
+          <div class="question-pill-grid flex flex-wrap gap-2">
             @for (q of deck(); track q.id; let i = $index) {
               <button
                 type="button"

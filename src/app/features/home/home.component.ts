@@ -1,7 +1,6 @@
 import { Component, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { CATEGORIES } from '../../core/data/categories';
-import { FAQ, JOURNEY, PILLARS, STATS, TESTIMONIALS } from '../../core/data/content';
+import { STATS, TESTIMONIALS } from '../../core/data/content';
 import { CURATED_QUESTIONS } from '../../core/data/curated-questions';
 // Imported from the leaf modules, not the `questions` aggregator: going through
 // the aggregator would pull the whole generated exam bank into the home bundle.
@@ -25,22 +24,11 @@ export class HomeComponent {
 
   readonly site = SITE;
   readonly coach = COACH;
-  readonly categories = CATEGORIES;
   readonly stats = STATS;
-  readonly pillars = PILLARS;
-  readonly journey = JOURNEY;
-  readonly testimonials = TESTIMONIALS;
-  readonly faq = FAQ;
+  readonly testimonials = TESTIMONIALS.slice(0, 3);
 
   readonly tel = links.tel;
   readonly waLink = links.wa(`مرحباً ${SITE.name}، أرغب بحجز درس تعليم قيادة. متى أقرب موعد متاح؟`);
-
-  /** One FAQ row open at a time; -1 means all collapsed. */
-  readonly openFaq = signal(-1);
-
-  toggleFaq(index: number): void {
-    this.openFaq.update((current) => (current === index ? -1 : index));
-  }
 
   // ---- "Question of the moment" teaser -------------------------------------
   // A single live question on the home page does more to sell the free mock exam

@@ -255,6 +255,7 @@ export class TheoryComponent implements OnDestroy {
     this.answers.set(new Array(deck.length).fill(null));
     this.index.set(0);
     this.stage.set('running');
+    setExamRunningClass(true);
 
     this.stopTicker();
     if (this.timed()) {
@@ -268,7 +269,7 @@ export class TheoryComponent implements OnDestroy {
         }
       }, 1000);
     }
-    scrollToTop();
+    this.scrollToQuestion();
   }
 
   answer(optionIndex: number): void {
@@ -292,22 +293,26 @@ export class TheoryComponent implements OnDestroy {
   goTo(i: number): void {
     if (i < 0 || i > this.furthest()) return;
     this.index.set(i);
+    this.scrollToQuestion();
   }
 
   next(): void {
     if (!this.currentAnswered() || this.index() >= this.deck().length - 1) return;
     this.index.update((i) => i + 1);
+    this.scrollToQuestion();
   }
 
   prev(): void {
     if (this.index() > 0) {
       this.index.update((i) => i - 1);
+      this.scrollToQuestion();
     }
   }
 
   finish(): void {
     this.stopTicker();
     this.stage.set('result');
+    setExamRunningClass(false);
     // Safe to be expressive now: the score is on screen anyway.
     if (this.passed()) {
       this.feedback.pass();
@@ -336,6 +341,7 @@ export class TheoryComponent implements OnDestroy {
   restart(): void {
     this.stopTicker();
     this.stage.set('setup');
+    setExamRunningClass(false);
     this.deck.set([]);
     this.answers.set([]);
     this.index.set(0);
@@ -414,6 +420,23 @@ export class TheoryComponent implements OnDestroy {
 
   // ---- Lifecycle -----------------------------------------------------------
 
+  /**
+   * Stage changes render asynchronously. Waiting for two frames ensures the
+   * first question exists before positioning it below the sticky exam status.
+   */
+  private scrollToQuestion(): void {
+    if (typeof window === 'undefined' || !window.matchMedia('(max-width: 639px)').matches) return;
+
+    window.requestAnimationFrame(() => {
+      window.requestAnimationFrame(() => {
+        document.getElementById('exam-question')?.scrollIntoView({
+          behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth',
+          block: 'start',
+        });
+      });
+    });
+  }
+
   private stopTicker(): void {
     if (this.ticker) {
       clearInterval(this.ticker);
@@ -423,6 +446,7 @@ export class TheoryComponent implements OnDestroy {
 
   ngOnDestroy(): void {
     this.stopTicker();
+    setExamRunningClass(false);
   }
 
   constructor() {
@@ -451,6 +475,13 @@ function poolFor(group: ExamGroupId): Question[] {
 function scrollToTop(): void {
   if (typeof window !== 'undefined') {
     window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+}
+
+/** Lets the public shell remove floating contact controls during an exam. */
+function setExamRunningClass(running: boolean): void {
+  if (typeof document !== 'undefined') {
+    document.body.classList.toggle('exam-running', running);
   }
 }
 
