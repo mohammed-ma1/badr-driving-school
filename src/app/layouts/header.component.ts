@@ -7,6 +7,7 @@ interface NavItem {
   path: string;
   label: string;
   icon: string;
+  fragment?: string;
 }
 
 @Component({
@@ -40,12 +41,12 @@ interface NavItem {
         </a>
 
         <nav class="hidden items-center gap-8 lg:flex" aria-label="التنقل الرئيسي">
-          @for (item of nav; track item.path) {
+          @for (item of nav; track item.label) {
             <a
               [routerLink]="item.path"
-              routerLinkActive="!text-brand-300 after:scale-x-100"
+              [fragment]="item.fragment"
+              [routerLinkActive]="item.fragment ? '' : '!text-brand-300 after:scale-x-100'"
               [routerLinkActiveOptions]="{ exact: item.path === '/' }"
-              ariaCurrentWhenActive="page"
               class="relative py-3 text-sm font-semibold text-white/85 transition-colors after:absolute after:inset-x-0 after:bottom-1 after:h-0.5 after:origin-center after:scale-x-0 after:rounded-full after:bg-brand-400 after:transition-transform hover:text-brand-300">
               {{ item.label }}
             </a>
@@ -82,12 +83,12 @@ interface NavItem {
           </button>
         </div>
 
-        @for (item of nav; track item.path) {
+        @for (item of nav; track item.label) {
           <a
             [routerLink]="item.path"
-            routerLinkActive="bg-brand-50 text-brand-700"
+            [fragment]="item.fragment"
+            [routerLinkActive]="item.fragment ? '' : 'bg-brand-50 text-brand-700'"
             [routerLinkActiveOptions]="{ exact: item.path === '/' }"
-            ariaCurrentWhenActive="page"
             (click)="drawer.set(false)"
             class="mobile-nav-link">
             <app-icon [name]="item.icon" [size]="20" class="text-brand-500" />
@@ -97,10 +98,7 @@ interface NavItem {
 
         <div class="mt-5 space-y-2.5 border-t border-brand-100 pt-5">
           <a routerLink="/theory" (click)="drawer.set(false)" class="btn-primary w-full">
-            <app-icon name="play" [size]="18" />ابدأ الفحص الآن
-          </a>
-          <a routerLink="/booking" (click)="drawer.set(false)" class="btn-outline w-full">
-            <app-icon name="calendar" [size]="18" />احجز مع المدرب
+            <app-icon name="play" [size]="18" />ابدأ الاختبار النهائي
           </a>
         </div>
 
@@ -116,9 +114,8 @@ interface NavItem {
 export class HeaderComponent {
   readonly nav: NavItem[] = [
     { path: '/', label: 'الصفحة الرئيسية', icon: 'grid' },
-    { path: '/theory', label: 'الفحص النظري', icon: 'clipboard' },
-    { path: '/coach', label: 'عن المدرب', icon: 'user' },
-    { path: '/services', label: 'فئات التدريب', icon: 'car' },
+    { path: '/theory', label: 'الاختبار النهائي', icon: 'clipboard' },
+    { path: '/theory', fragment: 'sections', label: 'الأقسام', icon: 'target' },
     { path: '/contact', label: 'اتصل بنا', icon: 'phone' },
   ];
 

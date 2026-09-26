@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { COACH, SITE, links } from '../core/site';
+import { SITE, links } from '../core/site';
 
 @Component({
   selector: 'app-footer',
@@ -9,10 +9,9 @@ import { COACH, SITE, links } from '../core/site';
     <footer class="mt-auto bg-[#202020] text-white/70">
       <div class="container-page grid gap-12 py-14 md:grid-cols-2">
         <div>
-          <h3 class="mb-5 text-xl font-bold text-white">عن المدرب</h3>
+          <h3 class="mb-5 text-xl font-bold text-white">الفحص النظري</h3>
           <p class="max-w-md text-sm leading-8">
-            {{ coachName }} مدرب قيادة معتمد يقدّم تدريباً عملياً هادئاً لجميع الفئات،
-            من أول درس حتى الاستعداد للاختبار.
+            اختبار نهائي لكل فئة، وأقسام للتدرّب على الإشارات وقواعد السير والسلامة والمركبة.
           </p>
         </div>
 
@@ -39,6 +38,5 @@ export class FooterComponent {
   readonly tel = links.tel;
   readonly hours = SITE.hours;
   readonly siteNameFull = SITE.nameFull;
-  readonly coachName = COACH.name;
   readonly year = SITE.year;
 }

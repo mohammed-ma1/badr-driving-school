@@ -1,6 +1,5 @@
 import { Component, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { STATS, TESTIMONIALS } from '../../core/data/content';
 import { CURATED_QUESTIONS } from '../../core/data/curated-questions';
 // Imported from the leaf modules, not the `questions` aggregator: going through
 // the aggregator would pull the whole generated exam bank into the home bundle.
@@ -9,12 +8,11 @@ import { FeedbackService } from '../../core/services/feedback.service';
 import { SeoService } from '../../core/services/seo.service';
 import { COACH, SITE, links } from '../../core/site';
 import { IconComponent } from '../../shared/ui/icon.component';
-import { StarsComponent } from '../../shared/ui/stars.component';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [RouterLink, IconComponent, StarsComponent],
+  imports: [RouterLink, IconComponent],
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss'],
 })
@@ -24,11 +22,8 @@ export class HomeComponent {
 
   readonly site = SITE;
   readonly coach = COACH;
-  readonly stats = STATS;
-  readonly testimonials = TESTIMONIALS.slice(0, 3);
 
   readonly tel = links.tel;
-  readonly waLink = links.wa(`مرحباً ${SITE.name}، أرغب بحجز درس تعليم قيادة. متى أقرب موعد متاح؟`);
 
   // ---- "Question of the moment" teaser -------------------------------------
   // A single live question on the home page does more to sell the free mock exam

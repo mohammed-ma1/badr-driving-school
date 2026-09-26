@@ -7,16 +7,16 @@ export const routes: Routes = [
     component: PublicLayoutComponent,
     children: [
       { path: '', loadComponent: () => import('./features/home/home.component').then((m) => m.HomeComponent) },
-      { path: 'coach', loadComponent: () => import('./features/coach/coach.component').then((m) => m.CoachComponent) },
-      { path: 'services', loadComponent: () => import('./features/services/services.component').then((m) => m.ServicesComponent) },
       { path: 'theory', loadComponent: () => import('./features/theory/theory.component').then((m) => m.TheoryComponent) },
-      { path: 'booking', loadComponent: () => import('./features/booking/booking.component').then((m) => m.BookingComponent) },
       { path: 'contact', loadComponent: () => import('./features/contact/contact.component').then((m) => m.ContactComponent) },
-      // Keep the same public URLs used by the reference website.
-      { path: 'about-us', redirectTo: 'coach' },
+      // Retired marketing pages now lead directly to the exam experience.
+      { path: 'coach', redirectTo: 'theory' },
+      { path: 'services', redirectTo: 'theory' },
+      { path: 'booking', redirectTo: 'theory' },
+      { path: 'about-us', redirectTo: 'theory' },
       { path: 'theoretical-examination', redirectTo: 'theory' },
       { path: 'contact-us', redirectTo: 'contact' },
-      { path: 'about', redirectTo: 'coach' },
+      { path: 'about', redirectTo: 'theory' },
       { path: 'exam', redirectTo: 'theory' },
     ],
   },

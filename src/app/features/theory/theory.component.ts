@@ -1,5 +1,4 @@
 import { Component, OnDestroy, computed, inject, signal } from '@angular/core';
-import { RouterLink } from '@angular/router';
 import {
   EXAM_MODELS,
   ExamModel,
@@ -14,7 +13,7 @@ import {
 import { SIGNS, SIGN_SHAPES, SignShape } from '../../core/data/signs';
 import { FeedbackService } from '../../core/services/feedback.service';
 import { SeoService } from '../../core/services/seo.service';
-import { SITE, links } from '../../core/site';
+import { SITE } from '../../core/site';
 import { IconComponent } from '../../shared/ui/icon.component';
 import { PageHeroComponent } from '../../shared/ui/page-hero.component';
 import { TrafficSignComponent } from '../../shared/ui/traffic-sign.component';
@@ -59,7 +58,7 @@ interface ExamGroup {
 @Component({
   selector: 'app-theory',
   standalone: true,
-  imports: [RouterLink, IconComponent, PageHeroComponent, TrafficSignComponent],
+  imports: [IconComponent, PageHeroComponent, TrafficSignComponent],
   templateUrl: './theory.component.html',
   styleUrls: ['./theory.component.scss'],
 })
@@ -67,11 +66,8 @@ export class TheoryComponent implements OnDestroy {
   private seo = inject(SeoService);
   readonly feedback = inject(FeedbackService);
 
-  readonly site = SITE;
-  readonly tel = links.tel;
   readonly topics = TOPICS;
   readonly bank = QUESTIONS;
-  readonly modelCount = EXAM_MODELS.length;
 
   readonly mode = signal<Mode>('exam');
   readonly stage = signal<Stage>('setup');
@@ -94,8 +90,7 @@ export class TheoryComponent implements OnDestroy {
     {
       id: 'private-public',
       title: 'الفحص النظري للفئتين الثالثة والرابعة',
-      description:
-        'نماذج الفحص النظري لرخصة الخصوصي والعمومي. يمكنك إجراء كل نموذج بشكل منفصل، ثم إجراء اختبار شامل يجمع أسئلة جميع النماذج.',
+      description: 'الاختبار النهائي لرخصة الخصوصي والعمومي: 60 سؤالاً خلال 60 دقيقة.',
       icon: 'car',
       parts: partsFor('class3'),
       comprehensive: {
@@ -107,8 +102,7 @@ export class TheoryComponent implements OnDestroy {
     {
       id: 'heavy',
       title: 'الفحص النظري للفئتين الخامسة والسادسة',
-      description:
-        'نماذج تغطي مركبات المحورين والشاحنات والحافلات، بما فيها الحمولات وأنظمة المركبات الثقيلة. ابدأ بالنماذج، ثم اختبر نفسك بالاختبار الشامل.',
+      description: 'الاختبار النهائي للشاحنات والحافلات ومركبات المحورين.',
       icon: 'truck',
       parts: partsFor('heavy'),
       comprehensive: {
@@ -120,8 +114,7 @@ export class TheoryComponent implements OnDestroy {
     {
       id: 'motorcycle',
       title: 'الفحص النظري لفئة الدراجة النارية',
-      description:
-        'نماذج مخصّصة لقواعد قيادة الدراجة النارية والسلامة ومشاركة الطريق، يليها اختبار شامل مشابه لفحص الترخيص.',
+      description: 'الاختبار النهائي لفئة الدراجة النارية.',
       icon: 'moto',
       parts: partsFor('moto'),
       comprehensive: {
